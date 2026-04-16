@@ -9,19 +9,19 @@
     /* ── Tipografías custom ── */
     @font-face {
       font-family: 'WorkFaAAD';
-      src: url("./assets/WorkFaAAD-A.woff2") format("woff2");
+      src: url("./assets/fonts/WorkFaAAD-A.woff2") format("woff2");
       font-weight: normal; font-style: normal;
     }
 
      @font-face {
       font-family: 'NectoMono';
-      src: url("./assets/NectoMono-Regular.woff2") format("woff2");
+      src: url("./assets/fonts/NectoMono-Regular.woff2") format("woff2");
       font-weight: normal; font-style: normal;
     }
 
      @font-face {
       font-family: 'WorkSans';
-      src: url("./assets/WorkSans-VariableFont_wght.woff2") format("woff2");
+      src: url("./assets/fonts/WorkSans-VariableFont_wght.woff2") format("woff2");
       font-weight: 100-900; font-style: normal;
     }
 
@@ -1119,7 +1119,7 @@
         <div id="projectsContainer" id="anchorProyecto"></div>
 
         <!-- Agregar proyecto -->
-        <div class="add-project-wrap" id="anchorImagenes">
+        <div class="add-project-wrap" id="anchorProyecto">
           <button type="button" class="btn-add-project" id="addProjectBtn">
             <span class="btn-add-project-icon">+</span>
             Agregar otra solicitud
@@ -1169,16 +1169,10 @@
 </div>
 
 <script>
-  var MIN_FILES   = 5;
-  var MAX_FILES   = 10;
-  var MAX_SIZE_MB = 10;
-
-  var cardFiles  = {};
   var cardOrder  = [];
   var nextCardId = 0;
-  var cardFilesGraficas = {};  // Para imágenes gráficas
 
-  var STEP_LABELS = ['Autor', 'Proyecto', 'Imágenes', 'Revisión'];
+  var STEP_LABELS = ['Autor', 'Solicitud', 'Enviar'];
   var isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
   // ── HTML de cada tarjeta ─────────────────────────────────────
@@ -1272,21 +1266,6 @@
             '<option value="Sí">Sí</option>' +
           '</select>' +
           '<p class="field-error" id="err-apoyoGraficoExtension-' + id + '">Selecciona una opción.</p>' +
-        '</div>' +
-        '<div class="field" id="imagenesGraficasExtension-' + id + '" style="display:none">' +
-          '<label>Imágenes para elaborar gráficas</label>' +
-          '<p class="helper">1. PANTALLAS: imagen horizontal — 1920x1080 pixeles.<br>2. POST: imagen cuadrada — 2048x2048 pixeles.<br>3. HISTORIAS: imagen vertical — 1080x1920 pixeles.<br>4. LOGOS: si es necesario incluir instituciones externas.<br>5. Imágenes complementarias — opcional.</p>' +
-          '<div class="drop-zone" id="dropZoneGraficas-' + id + '" role="button" tabindex="0" aria-label="Zona para subir imágenes gráficas">' +
-            '<strong>' + (isTouchDevice ? 'Toca aquí para agregar imágenes' : 'Arrastra las imágenes aquí') + '</strong>' +
-            '<span>' + (isTouchDevice ? 'JPG, PNG, GIF, WEBP · Máx. 10 MB por imagen' : 'o haz clic para seleccionar — JPG, PNG, GIF, WEBP · Máx. 10 MB') + '</span>' +
-            '<span class="drop-counter" id="dropCounterGraficas-' + id + '">0 imágenes</span>' +
-          '</div>' +
-          '<input type="file" id="fileInputGraficas-' + id + '" accept="image/jpeg,image/png,image/gif,image/webp" multiple class="file-input-hidden" autocomplete="off">' +
-          '<div class="img-progress" id="imgProgressGraficas-' + id + '" style="display:none">' +
-            '<div class="img-progress-track"><div class="img-progress-fill" id="imgProgressFillGraficas-' + id + '"></div></div>' +
-            '<span class="img-progress-label" id="imgProgressLabelGraficas-' + id + '"></span>' +
-          '</div>' +
-          '<div class="preview-grid" id="previewGridGraficas-' + id + '"></div>' +
         '</div>' +
         '<div class="field">' +
           '<label for="solicitudesEspecialesExtension-' + id + '">Solicitudes especiales</label>' +
@@ -1421,21 +1400,6 @@
           '<label for="investigadoresColaboradoresInvestigacion-' + id + '">Investigadores colaboradores y afiliación institucional</label>' +
           '<input type="text" id="investigadoresColaboradoresInvestigacion-' + id + '" placeholder="Respuesta corta">' +
         '</div>' +
-        '<div class="field">' +
-          '<label>Imágenes del proyecto</label>' +
-          '<p class="helper">Posibilidad de subir fotitos</p>' +
-          '<div class="drop-zone" id="dropZone-' + id + '" role="button" tabindex="0" aria-label="Zona para subir imágenes del proyecto">' +
-            '<strong>' + (isTouchDevice ? 'Toca aquí para agregar imágenes' : 'Arrastra las imágenes aquí') + '</strong>' +
-            '<span>' + (isTouchDevice ? 'JPG, PNG, GIF, WEBP · Máx. 10 MB por imagen' : 'o haz clic para seleccionar — JPG, PNG, GIF, WEBP · Máx. 10 MB') + '</span>' +
-            '<span class="drop-counter" id="dropCounter-' + id + '">0 / 5 mínimo · máx. 10</span>' +
-          '</div>' +
-          '<input type="file" id="fileInput-' + id + '" accept="image/jpeg,image/png,image/gif,image/webp" multiple class="file-input-hidden" autocomplete="off">' +
-          '<div class="img-progress" id="imgProgress-' + id + '" style="display:none">' +
-            '<div class="img-progress-track"><div class="img-progress-fill" id="imgProgressFill-' + id + '"></div></div>' +
-            '<span class="img-progress-label" id="imgProgressLabel-' + id + '"></span>' +
-          '</div>' +
-          '<div class="preview-grid" id="previewGrid-' + id + '"></div>' +
-        '</div>' +
       '</div>'
     );
   }
@@ -1444,8 +1408,6 @@
   function addCard() {
     var id = nextCardId++;
     cardOrder.push(id);
-    cardFiles[id] = [];
-    cardFilesGraficas[id] = [];
     var container = document.getElementById('projectsContainer');
     var wrapper = document.createElement('div');
     wrapper.id = 'card-' + id;
@@ -1458,8 +1420,6 @@
 
   function removeCard(id) {
     cardOrder = cardOrder.filter(function(x) { return x !== id; });
-    delete cardFiles[id];
-    delete cardFilesGraficas[id];
     var el = document.getElementById('card-' + id);
     if (el) el.remove();
     updateCardUI();
@@ -1483,10 +1443,6 @@
     var tipoSolicitud = document.getElementById('tipoSolicitud-' + id);
     var necesitaSala = document.getElementById('necesitaSalaExtension-' + id);
     var apoyoGrafico = document.getElementById('apoyoGraficoExtension-' + id);
-    var dropZoneGraficas = document.getElementById('dropZoneGraficas-' + id);
-    var fileInputGraficas = document.getElementById('fileInputGraficas-' + id);
-    var dropZone = document.getElementById('dropZone-' + id);
-    var fileInput = document.getElementById('fileInput-' + id);
     var removeBtn    = card.querySelector('.remove-card-btn');
 
       // Mostrar/ocultar secciones basadas en tipo de solicitud
@@ -1523,54 +1479,6 @@
       prefEl.style.display = this.value === 'Sí' ? 'block' : 'none';
     });
 
-    // Mostrar zona de imágenes gráficas si solicita apoyo gráfico
-    apoyoGrafico.addEventListener('change', function() {
-      var imgEl = document.getElementById('imagenesGraficasExtension-' + id);
-      imgEl.style.display = this.value === 'Sí' ? 'block' : 'none';
-    });
-
-    // Eventos para drop zone gráficas
-    dropZoneGraficas.addEventListener('click', function() { fileInputGraficas.click(); });
-    dropZoneGraficas.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInputGraficas.click(); }
-    });
-    ['dragleave', 'dragend'].forEach(function(evt) {
-      dropZoneGraficas.addEventListener(evt, function() { dropZoneGraficas.classList.remove('dragover'); });
-    });
-    dropZoneGraficas.addEventListener('dragover', function(e) {
-      e.preventDefault(); dropZoneGraficas.classList.add('dragover');
-    });
-    dropZoneGraficas.addEventListener('drop', function(e) {
-      e.preventDefault(); dropZoneGraficas.classList.remove('dragover');
-      processFilesGraficas(id, Array.from(e.dataTransfer.files));
-    });
-    fileInputGraficas.addEventListener('change', function() {
-      processFilesGraficas(id, Array.from(this.files)); this.value = '';
-    });
-
-    // Eventos para drop zone de imágenes del proyecto (investigación)
-    if (dropZone) {
-      dropZone.addEventListener('click', function() { fileInput.click(); });
-      dropZone.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
-      });
-      ['dragleave', 'dragend'].forEach(function(evt) {
-        dropZone.addEventListener(evt, function() { dropZone.classList.remove('dragover'); });
-      });
-      dropZone.addEventListener('dragover', function(e) {
-        e.preventDefault(); dropZone.classList.add('dragover');
-      });
-      dropZone.addEventListener('drop', function(e) {
-        e.preventDefault(); dropZone.classList.remove('dragover');
-        processFiles(id, Array.from(e.dataTransfer.files));
-      });
-    }
-    if (fileInput) {
-      fileInput.addEventListener('change', function() {
-        processFiles(id, Array.from(this.files)); this.value = '';
-      });
-    }
-
     removeBtn.addEventListener('click', function() {
       if (cardOrder.length > 1 && confirm('¿Eliminar esta solicitud del formulario?')) {
         removeCard(id);
@@ -1592,155 +1500,6 @@
         });
       });
     });
-  }
-
-  // ── Archivos ─────────────────────────────────────────────────
-  function processFiles(id, newFiles) {
-    var files = cardFiles[id];
-    var slots = MAX_FILES - files.length;
-    if (slots <= 0) {
-      showStatus('Ya alcanzaste el máximo de ' + MAX_FILES + ' imágenes en la Solicitud ' + (cardOrder.indexOf(id) + 1) + '.', 'error');
-      return;
-    }
-    var toAdd = newFiles.slice(0, slots);
-    var rejected = [];
-    toAdd.forEach(function(file) {
-      if (!file.type.startsWith('image/')) { rejected.push(file.name + ' (solo imágenes)'); return; }
-      if (file.size > MAX_SIZE_MB * 1024 * 1024) { rejected.push(file.name + ' (supera los ' + MAX_SIZE_MB + ' MB)'); return; }
-      files.push(file);
-    });
-    cardFiles[id] = files;
-    if (rejected.length) showStatus('Archivos rechazados: ' + rejected.join(', '), 'error');
-    var dz = document.getElementById('dropZone-' + id);
-    if (dz) dz.classList.remove('error');
-    renderPreviews(id);
-    updateProgress(id);
-  }
-
-  function processFilesGraficas(id, newFiles) {
-    var files = cardFilesGraficas[id];
-    var slots = MAX_FILES - files.length;
-    if (slots <= 0) {
-      showStatus('Ya alcanzaste el máximo de ' + MAX_FILES + ' imágenes gráficas en la Solicitud ' + (cardOrder.indexOf(id) + 1) + '.', 'error');
-      return;
-    }
-    var toAdd = newFiles.slice(0, slots);
-    var rejected = [];
-    toAdd.forEach(function(file) {
-      if (!file.type.startsWith('image/')) { rejected.push(file.name + ' (solo imágenes)'); return; }
-      if (file.size > MAX_SIZE_MB * 1024 * 1024) { rejected.push(file.name + ' (supera los ' + MAX_SIZE_MB + ' MB)'); return; }
-      files.push(file);
-    });
-    cardFilesGraficas[id] = files;
-    if (rejected.length) showStatus('Archivos rechazados: ' + rejected.join(', '), 'error');
-    renderPreviewsGraficas(id);
-    updateProgressGraficas(id);
-  }
-
-  function updateProgress(id) {
-    var n    = cardFiles[id].length;
-    var prog = document.getElementById('imgProgress-' + id);
-    var fill = document.getElementById('imgProgressFill-' + id);
-    var lbl  = document.getElementById('imgProgressLabel-' + id);
-    var counter = document.getElementById('dropCounter-' + id);
-
-    // Barra de progreso (se muestra solo cuando hay archivos)
-    if (n === 0) {
-      prog.style.display = 'none';
-    } else {
-      prog.style.display = 'flex';
-      fill.style.width = Math.min((n / MAX_FILES) * 100, 100) + '%';
-      fill.style.background = n >= MIN_FILES ? '#2e5c42' : '#111';
-      lbl.textContent = n + ' / ' + MAX_FILES + ' imágenes';
-      lbl.className   = 'img-progress-label' + (n >= MIN_FILES ? ' ok' : '') + (n === MAX_FILES ? ' warn' : '');
-    }
-
-    // Contador en drop-zone (siempre visible)
-    if (counter) {
-      if (n === 0) {
-        counter.textContent = '0 / 5 mínimo · máx. 10';
-        counter.style.color = '';
-      } else if (n < MIN_FILES) {
-        counter.textContent = n + ' / 5 mínimo · máx. 10';
-        counter.style.color = '';
-      } else if (n < MAX_FILES) {
-        counter.textContent = n + ' imágenes · listo para enviar';
-        counter.style.color = '#2e5c42';
-      } else {
-        counter.textContent = '10 / 10 · máximo alcanzado';
-        counter.style.color = '#b83a24';
-      }
-    }
-  }
-
-  function renderPreviews(id) {
-    var grid = document.getElementById('previewGrid-' + id);
-    grid.innerHTML = '';
-    cardFiles[id].forEach(function(file, idx) {
-      var item = document.createElement('div');
-      item.className = 'preview-item';
-      var img = document.createElement('img');
-      img.src = URL.createObjectURL(file); img.alt = file.name;
-      item.appendChild(img);
-      var lbl = document.createElement('div');
-      lbl.className = 'file-label'; lbl.textContent = file.name;
-      item.appendChild(lbl);
-      var btn = document.createElement('button');
-      btn.className = 'remove-btn'; btn.type = 'button'; btn.textContent = '×'; btn.title = 'Eliminar';
-      (function(i) {
-        btn.addEventListener('click', function() {
-          cardFiles[id].splice(i, 1); renderPreviews(id); updateProgress(id);
-        });
-      })(idx);
-      item.appendChild(btn);
-      grid.appendChild(item);
-    });
-  }
-
-  function renderPreviewsGraficas(id) {
-    var grid = document.getElementById('previewGridGraficas-' + id);
-    grid.innerHTML = '';
-    cardFilesGraficas[id].forEach(function(file, idx) {
-      var item = document.createElement('div');
-      item.className = 'preview-item';
-      var img = document.createElement('img');
-      img.src = URL.createObjectURL(file); img.alt = file.name;
-      item.appendChild(img);
-      var lbl = document.createElement('div');
-      lbl.className = 'file-label'; lbl.textContent = file.name;
-      item.appendChild(lbl);
-      var btn = document.createElement('button');
-      btn.className = 'remove-btn'; btn.type = 'button'; btn.textContent = '×'; btn.title = 'Eliminar';
-      (function(i) {
-        btn.addEventListener('click', function() {
-          cardFilesGraficas[id].splice(i, 1); renderPreviewsGraficas(id); updateProgressGraficas(id);
-        });
-      })(idx);
-      item.appendChild(btn);
-      grid.appendChild(item);
-    });
-  }
-
-  function updateProgressGraficas(id) {
-    var n    = cardFilesGraficas[id].length;
-    var prog = document.getElementById('imgProgressGraficas-' + id);
-    var fill = document.getElementById('imgProgressFillGraficas-' + id);
-    var lbl  = document.getElementById('imgProgressLabelGraficas-' + id);
-    var counter = document.getElementById('dropCounterGraficas-' + id);
-
-    if (n === 0) {
-      prog.style.display = 'none';
-    } else {
-      prog.style.display = 'flex';
-      fill.style.width = Math.min((n / MAX_FILES) * 100, 100) + '%';
-      fill.style.background = '#111';
-      lbl.textContent = n + ' / ' + MAX_FILES + ' imágenes gráficas';
-      lbl.className   = 'img-progress-label';
-    }
-
-    if (counter) {
-      counter.textContent = n + ' imágenes gráficas';
-    }
   }
 
   // ── Validación ───────────────────────────────────────────────
@@ -1874,21 +1633,10 @@
     });
     var capturedEmail = document.getElementById('emailResponsable').value.trim();
 
-    Promise.all(cardOrder.map(function(id) {
-      var promises = [Promise.all(cardFiles[id].map(toBase64))];
-      if (document.getElementById('tipoSolicitud-' + id).value === 'extension') {
-        promises.push(Promise.all(cardFilesGraficas[id].map(toBase64)));
-      }
-      return Promise.all(promises);
-    })).then(function(archivosPerCard) {
-      submitCards(archivosPerCard, 0, [], capturedNames, capturedEmail);
-    }).catch(function(err) {
-      setLoading(false);
-      showStatus('Error al leer las imágenes: ' + err.message, 'error');
-    });
+    submitCards(0, [], capturedNames, capturedEmail);
   });
 
-  function submitCards(archivosPerCard, index, results, projectNames, authorEmail) {
+  function submitCards(index, results, projectNames, authorEmail) {
     if (index >= cardOrder.length) {
       setLoading(false);
       var ok = results.filter(function(r) { return r.exito; }).length;
@@ -1904,36 +1652,33 @@
     }
 
     var id      = cardOrder[index];
-    var archivos = archivosPerCard[index][0];
-    var archivosGraficas = archivosPerCard[index][1] || [];
-    var payload = buildPayload(id, archivos, archivosGraficas);
+    var payload = buildPayload(id);
 
     if (typeof google !== 'undefined' && google.script) {
       google.script.run
         .withSuccessHandler(function(result) {
           results.push(result);
-          submitCards(archivosPerCard, index + 1, results, projectNames, authorEmail);
+          submitCards(index + 1, results, projectNames, authorEmail);
         })
         .withFailureHandler(function(err) {
           results.push({ exito: false, mensaje: err.message || 'Error' });
-          submitCards(archivosPerCard, index + 1, results, projectNames, authorEmail);
+          submitCards(index + 1, results, projectNames, authorEmail);
         })
         .enviarProyecto(payload);
     } else {
       setTimeout(function() {
         results.push({ exito: true, mensaje: '[Local] ' + (payload.tituloExtension || payload.tituloExterna || payload.tituloInvestigacion || 'Sin título') });
-        submitCards(archivosPerCard, index + 1, results, projectNames, authorEmail);
+        submitCards(index + 1, results, projectNames, authorEmail);
       }, 400);
     }
   }
 
-  function buildPayload(id, archivos, archivosGraficas) {
+  function buildPayload(id) {
     var tipo = cval(id, 'tipoSolicitud');
     var payload = {
       tipoSolicitud: tipo,
       nombreResponsable: document.getElementById('nombreResponsable').value.trim(),
-      emailResponsable:  document.getElementById('emailResponsable').value.trim(),
-      archivos: archivos
+      emailResponsable:  document.getElementById('emailResponsable').value.trim()
     };
     if (tipo === 'extension') {
       payload.tituloExtension = cval(id, 'tituloExtension');
@@ -1947,7 +1692,6 @@
       payload.preferenciaSalaExtension = cval(id, 'preferenciaSalaExtension');
       payload.apoyoGraficoExtension = cval(id, 'apoyoGraficoExtension');
       payload.solicitudesEspecialesExtension = getChecked(id, 'solicitudesEspecialesExtension');
-      payload.archivosGraficas = archivosGraficas;
     } else if (tipo === 'externa') {
       payload.institucionExterna = cval(id, 'institucionExterna');
       payload.tituloExterna = cval(id, 'tituloExterna');
@@ -1978,19 +1722,11 @@
 
   function cval(id, field) {
     var el = document.getElementById(field + '-' + id);
-    return el ? el.value.trim() : '';
+    return el && typeof el.value === 'string' ? el.value.trim() : '';
   }
   function getChecked(id, name) {
     return Array.from(document.querySelectorAll('input[name="' + name + '-' + id + '"]:checked'))
                .map(function(cb) { return cb.value; });
-  }
-  function toBase64(file) {
-    return new Promise(function(resolve, reject) {
-      var reader = new FileReader();
-      reader.onload  = function() { resolve({ data: reader.result, nombre: file.name, tipo: file.type }); };
-      reader.onerror = function() { reject(new Error('No se pudo leer: ' + file.name)); };
-      reader.readAsDataURL(file);
-    });
   }
 
   // ── Confirmación ─────────────────────────────────────────────
@@ -2094,12 +1830,11 @@
     });
   }
 
-  // IDs de destino por índice de paso (0=Autor, 1=Proyecto, 2=Imágenes, 3=Revisión)
+  // IDs de destino por índice de paso (0=Autor, 1=Solicitud, 2=Enviar)
   // Los IDs con sufijo -0 apuntan siempre a la primera tarjeta
   var STEP_ANCHOR_IDS = [
     'anchorAutor',
     'anchorProyecto-0',
-    'anchorMaterial-0',
     'anchorRevision'
   ];
 

@@ -1,16 +1,12 @@
 // ══════════════════════════════════════════════════════════════════════════════
-//  CONFIGURACIÓN — reemplaza estos dos valores antes de desplegar
+//  CONFIGURACIÓN — reemplaza este valor antes de desplegar
 // ══════════════════════════════════════════════════════════════════════════════
 //
 //  SPREADSHEET_ID → abre tu Google Sheet y copia el ID de la URL:
 //                   https://docs.google.com/spreadsheets/d/ [ESTE_TRAMO] /edit
-//
-//  DRIVE_FOLDER_ID → abre tu carpeta raíz en Drive y copia el ID de la URL:
-//                   https://drive.google.com/drive/folders/ [ESTE_TRAMO]
 
-var SPREADSHEET_ID  = '1NKx4wxMdGutwTfw2Gn3sNTdj3iy4xQDri1gxx_pF1b0';
-var DRIVE_FOLDER_ID = '1Xm-sqfF45yOXWVfkTmf7ZNES2SgODF10';
-var SHEET_NAME      = 'Solicitudes';   // nombre de la pestaña en el Sheet
+var SPREADSHEET_ID = '1NKx4wxMdGutwTfw2Gn3sNTdj3iy4xQDri1gxx_pF1b0';
+var SHEET_NAME     = 'Solicitudes';   // nombre de la pestaña en el Sheet
 
 // ══════════════════════════════════════════════════════════════════════════════
 //  SERVIR EL FORMULARIO HTML
@@ -32,22 +28,13 @@ function doGet() {
 //    tipoSolicitud: 'extension' | 'externa' | 'investigacion',
 //    nombreResponsable, emailResponsable,
 //    // campos específicos según tipo
-//    archivos: [ { data, nombre, tipo }, ... ],  // para investigación o gráficas
-//    archivosGraficas: [ ... ]  // para extensión si solicita apoyo gráfico
 //  }
 // ══════════════════════════════════════════════════════════════════════════════
 
 function enviarProyecto(payload) {
   try {
-    // Crear carpeta de la solicitud en Drive
-    var carpetaSolicitud = crearCarpetaSolicitud(payload);
-
-    // Guardar imágenes en Drive
-    var urlsArchivos = guardarArchivos(payload.archivos || [], carpetaSolicitud);
-    var urlsGraficas = guardarArchivos(payload.archivosGraficas || [], carpetaSolicitud);
-
     // Registrar fila en Google Sheets
-    registrarEnSheet(payload, carpetaSolicitud.getUrl(), urlsArchivos, urlsGraficas);
+    registrarEnSheet(payload);
 
     return {
       exito: true,
@@ -144,20 +131,17 @@ function guardarArchivos(archivos, carpeta) {
 //  REGISTRAR EN LAS HOJAS
 // ══════════════════════════════════════════════════════════════════════════════
 
-function registrarEnSheet(payload, urlCarpeta, urlsArchivos, urlsGraficas) {
+function registrarEnSheet(payload) {
   var ss        = SpreadsheetApp.openById(SPREADSHEET_ID);
   var timestamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd/MM/yyyy HH:mm:ss');
 
   if (payload.tipoSolicitud === 'extension') {
-    registrarExtension(ss, payload, urlCarpeta, urlsArchivos, urlsGraficas, timestamp);
+    registrarExtension(ss, payload, timestamp);
   } else if (payload.tipoSolicitud === 'externa') {
-    registrarExterna(ss, payload, urlCarpeta, urlsArchivos, timestamp);
+    registrarExterna(ss, payload, timestamp);
   } else if (payload.tipoSolicitud === 'investigacion') {
-    registrarInvestigacion(ss, payload, urlCarpeta, urlsArchivos, timestamp);
+    registrarInvestigacion(ss, payload, timestamp);
   }
-
-  registrarImagenes(ss, payload, urlsArchivos, urlsGraficas, timestamp);
-  actualizarHoja04(ss);
 }
 
 // ── Hoja 01: resumen visual (una fila por proyecto, columnas clave) ───────────
@@ -306,7 +290,7 @@ function encabezadosHoja03(sheet) {
 
 // ── Registrar Extension ───────────────────────────────────────────────────
 
-function registrarExtension(ss, payload, urlCarpeta, urlsArchivos, urlsGraficas, timestamp) {
+function registrarExtension(ss, payload, timestamp) {
   var sheet = ss.getSheetByName('Extension');
   if (!sheet) {
     sheet = ss.insertSheet('Extension');
@@ -329,9 +313,6 @@ function registrarExtension(ss, payload, urlCarpeta, urlsArchivos, urlsGraficas,
     payload.necesitaSalaExtension,
     payload.preferenciaSalaExtension,
     payload.apoyoGraficoExtension,
-    urlCarpeta,
-    urlsArchivos.length,
-    urlsGraficas.length,
     payload.solicitudesEspecialesExtension ? payload.solicitudesEspecialesExtension.join(', ') : ''
   ]);
 
@@ -346,7 +327,7 @@ function encabezadosExtension(sheet) {
   var headers = [
     'Fecha envío', 'Nombre autor', 'Email autor', 'Título', 'Descripción actividad', '¿En convenio?',
     'Participantes', 'Biografía', 'RRSS', 'Fecha y hora', '¿Necesita sala?', 'Preferencia sala',
-    'Apoyo gráfico', 'Carpeta Drive', 'N° imágenes proyecto', 'N° imágenes gráficas', 'Solicitudes especiales'
+    'Apoyo gráfico', 'Solicitudes especiales'
   ];
   sheet.appendRow(headers);
   var r = sheet.getRange(1, 1, 1, headers.length);
@@ -361,7 +342,7 @@ function encabezadosExtension(sheet) {
 
 // ── Registrar Externa ──────────────────────────────────────────────────────
 
-function registrarExterna(ss, payload, urlCarpeta, urlsArchivos, timestamp) {
+function registrarExterna(ss, payload, timestamp) {
   var sheet = ss.getSheetByName('Externa');
   if (!sheet) {
     sheet = ss.insertSheet('Externa');
@@ -382,9 +363,7 @@ function registrarExterna(ss, payload, urlCarpeta, urlsArchivos, timestamp) {
     payload.linksExterna,
     fechaHora,
     payload.lugarExterna,
-    payload.asistentesExterna,
-    urlCarpeta,
-    urlsArchivos.length
+    payload.asistentesExterna
   ]);
 
   // Zebra
@@ -398,7 +377,7 @@ function encabezadosExterna(sheet) {
   var headers = [
     'Fecha envío', 'Nombre autor', 'Email autor', 'Institución organizadora', 'Título actividad',
     'Descripción evento', 'Participantes', 'Biografía', 'Links complementarios', 'Fecha y hora',
-    'Lugar', 'Cantidad asistentes', 'Carpeta Drive', 'N° imágenes'
+    'Lugar', 'Cantidad asistentes'
   ];
   sheet.appendRow(headers);
   var r = sheet.getRange(1, 1, 1, headers.length);
@@ -412,7 +391,7 @@ function encabezadosExterna(sheet) {
 
 // ── Registrar Investigacion ─────────────────────────────────────────────────
 
-function registrarInvestigacion(ss, payload, urlCarpeta, urlsArchivos, timestamp) {
+function registrarInvestigacion(ss, payload, timestamp) {
   var sheet = ss.getSheetByName('Investigacion');
   if (!sheet) {
     sheet = ss.insertSheet('Investigacion');
@@ -435,15 +414,13 @@ function registrarInvestigacion(ss, payload, urlCarpeta, urlsArchivos, timestamp
     payload.montoAdjudicadoInvestigacion,
     payload.rolUdpInvestigacion,
     payload.investigadorResponsableInvestigacion,
-    payload.investigadoresColaboradoresInvestigacion,
-    urlCarpeta,
-    urlsArchivos.length
+    payload.investigadoresColaboradoresInvestigacion
   ]);
 
   // Zebra
   var fila = sheet.getLastRow();
   if (fila % 2 === 0) {
-    sheet.getRange(fila, 1, 1, 18).setBackground('#f8f9fc');
+    sheet.getRange(fila, 1, 1, 16).setBackground('#f8f9fc');
   }
 }
 
@@ -452,7 +429,7 @@ function encabezadosInvestigacion(sheet) {
     'Fecha envío', 'Nombre autor', 'Email autor', 'Título proyecto', 'Descripción proyecto',
     '¿Financiamiento UDP?', '¿Financiamiento externo?', 'Agencia financiera', 'Fondo',
     'Año adjudicación', 'Año inicio', 'Año término', 'Monto adjudicado', 'Rol UDP',
-    'Investigador responsable', 'Investigadores colaboradores', 'Carpeta Drive', 'N° imágenes'
+    'Investigador responsable', 'Investigadores colaboradores'
   ];
   sheet.appendRow(headers);
   var r = sheet.getRange(1, 1, 1, headers.length);
