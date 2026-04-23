@@ -276,6 +276,29 @@
     .tag-chip input:checked + span {
       background: var(--fg); color: var(--bg); border-color: var(--fg);
     }
+
+    /* ── Botones Sí/No ── */
+    .yes-no-buttons { display: flex; gap: 8px; margin-top: 8px; }
+    .yes-no-btn { flex: 1; }
+    .yes-no-btn input[type="radio"] { display: none; }
+    .yes-no-btn span {
+      display: block;
+      padding: 12px 16px;
+      border: 1px solid var(--gray);
+      font-family: 'NectoMono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-align: center;
+      cursor: pointer;
+      color: #444;
+      background: transparent;
+      transition: all 0.13s;
+    }
+    .yes-no-btn span:hover { border-color: var(--fg); color: var(--fg); }
+    .yes-no-btn input:checked + span {
+      background: var(--fg); color: var(--bg); border-color: var(--fg);
+    }
     /* Colores por mención */
     .tag-chip[data-m="grafico"]      input:checked + span { background: #2952a3; border-color: #2952a3; }
     .tag-chip[data-m="industrial"]   input:checked + span { background: #b83a24; border-color: #b83a24; }
@@ -881,7 +904,7 @@
 
   <div class="page-header">
     <h1>Enviar solicitud</h1>
-    <p>Completa el formulario para enviar tu solicitud de extensión o participación externa.</p>
+    <p>Después de llenar el formulario, el equipo de VcM se contactará contigo en un plazo máximo de 2 días para completar la solicitud.</p>
   </div>
 
   <!-- Aviso previo -->
@@ -899,16 +922,16 @@
       <!-- ── Página 0: Autor ── -->
       <div class="mob-page active" data-page="0">
         <div class="author-section" id="anchorAutor">
-          <h2>Información del autor</h2>
+          <h2>Información Postulante:</h2>
           <div class="field-row">
             
             <div class="field">
-              <label for="nombreResponsable">Nombre del autor <span class="req">*</span></label>
+              <label for="nombreResponsable">Nombre <span class="req">*</span></label>
               <input type="text" id="nombreResponsable" placeholder="Nombre completo" required>
               <p class="field-error" id="err-nombreResponsable">Este campo es obligatorio.</p>
             </div>
             <div class="field">
-              <label for="emailResponsable">Email del autor <span class="req">*</span></label>
+              <label for="emailResponsable">Email <span class="req">*</span></label>
               <input type="email" id="emailResponsable" placeholder="correo@ejemplo.com" required>
               <p class="field-error" id="err-emailResponsable">Este campo es obligatorio.</p>
             </div>
@@ -1060,19 +1083,27 @@
           '<label for="preferenciaSalaExtension-' + id + '">Preferencia de lugar</label>' +
           '<select id="preferenciaSalaExtension-' + id + '">' +
             '<option value="">Selecciona una sala</option>' +
-            '<option value="Auditorio 1 República 180 - 80 personas">Auditorio 1 República 180 - 80 personas</option>' +
-            '<option value="Auditorio 2 República 180 - 150 personas">Auditorio 2 República 180 - 150 personas</option>' +
+            '<option value="Auditorio -1 República 180 - 80 personas">Auditorio 1 República 180 - 80 personas</option>' +
+            '<option value="Auditorio -2 República 180 - 150 personas">Auditorio 2 República 180 - 150 personas</option>' +
             '<option value="Auditorio Salvador Sanfuentes - 114 personas">Auditorio Salvador Sanfuentes - 114 personas</option>' +
             '<option value="Sala Cilindro Salvador Sanfuentes - 25 personas">Sala Cilindro Salvador Sanfuentes - 25 personas</option>' +
-          '</select>' +
+            '<option value="Aula Magna Facultad de Derecho - xx personas">Auditorio Facultad de Derecho - xx personas</option>' +
+            '<option value="Auditorio Facultad de Derecho - xx personas">Auditorio Facultad de Derecho - xx personas</option>' +
+
+            '</select>' +
         '</div>' +
         '<div class="field">' +
-          '<label for="apoyoGraficoExtension-' + id + '">Solicitud de apoyo gráfico <span class="req">*</span></label>' +
-          '<select id="apoyoGraficoExtension-' + id + '" required>' +
-            '<option value="">Selecciona</option>' +
-            '<option value="No">No</option>' +
-            '<option value="Sí">Sí</option>' +
-          '</select>' +
+          '<label>¿Solicitas apoyo gráfico? <span class="req">*</span></label>' +
+          '<div class="yes-no-buttons">' +
+            '<label class="yes-no-btn">' +
+              '<input type="radio" name="apoyoGraficoExtension-' + id + '" value="Sí">' +
+              '<span>Sí</span>' +
+            '</label>' +
+            '<label class="yes-no-btn">' +
+              '<input type="radio" name="apoyoGraficoExtension-' + id + '" value="No">' +
+              '<span>No</span>' +
+            '</label>' +
+          '</div>' +
           '<p class="field-error" id="err-apoyoGraficoExtension-' + id + '">Selecciona una opción.</p>' +
         '</div>' +
         '<div class="field">' +
