@@ -4,6 +4,12 @@ Aplicación web construida con **Google Apps Script** para que estudiantes y alu
 
 Los datos se almacenan automáticamente en Google Sheets.
 
+- []()
+- []()
+- []()
+- []()
+
+
 ## Tecnologías
 
 - **Frontend**: HTML, CSS, JavaScript (vanilla)
