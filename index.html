@@ -4,8 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Enviar solicitud — FaAAD UDP</title>
-    <link rel="icon" type="image/x-icon" href="./assets/icons/logo-udp-cuad.ico">
+  <link rel="icon" type="image/x-icon" href="./assets/icons/logo-udp-cuad.ico">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=error" />
   <style>
+
+    
     /* ── Tipografías custom ── */
     @font-face {
       font-family: 'WorkFaAAD';
@@ -628,7 +631,97 @@
     #confirm-list li:first-child { border-top: 1px solid var(--gray); }
 
 
-    /* ── Responsive — tablet ≤ 900px ── */
+    /* ── Sección fotos y registros ── */
+    .foto-registro-section {
+      border-top: 1px dashed var(--gray);
+      margin-top: 32px;
+      padding-top: 28px;
+    }
+    .foto-registro-section .section-subtitle {
+      font-family: 'NectoMono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 20px;
+    }
+
+    /* ── Panel apoyo gráfico ── */
+    .apoyo-grafico-panel {
+      border: 1px solid var(--gray);
+      padding: 24px 28px;
+      margin-top: 16px;
+      background: rgba(17,17,17,0.02);
+    }
+    .apoyo-grafico-panel .panel-title {
+      font-family: 'NectoMono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #444;
+      margin-bottom: 20px;
+    }
+    .grafico-item {
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--gray);
+    }
+    .grafico-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .grafico-item-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .grafico-item-num {
+      font-family: 'NectoMono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #aaa;
+      white-space: nowrap;
+    }
+    .grafico-item-label {
+      font-family: 'NectoMono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--fg);
+      font-weight: 400;
+    }
+    .grafico-item-spec {
+      font-family: 'WorkSans', sans-serif;
+      font-size: 0.82rem;
+      color: #666;
+      margin-bottom: 12px;
+      margin-left: 0;
+    }
+
+    /* ── Radio como tag-chip (para selects binarios) ── */
+    .radio-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .radio-chip input[type="radio"] { display: none; }
+    .radio-chip span {
+      display: inline-block;
+      padding: 9px 18px;
+      border: 1px solid var(--gray);
+      border-radius: 0;
+      font-family: 'NectoMono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      color: #444;
+      background: transparent;
+      transition: all 0.13s;
+      user-select: none;
+    }
+    .radio-chip span:hover { border-color: var(--fg); color: var(--fg); }
+    .radio-chip input:checked + span { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+    @media (max-width: 600px) {
+      .radio-chip span { padding: 12px 16px; font-size: 0.8rem; min-height: 44px; display: flex; align-items: center; }
+      .apoyo-grafico-panel { padding: 18px 16px; }
+    }
     @media (max-width: 900px) {
       body { padding: 0 32px 80px; }
       .page-header { padding-top: 40px; }
@@ -908,8 +1001,11 @@
   </div>
 
   <!-- Aviso previo -->
-  <div class="aviso-previo">
-    <p>El registro no garantiza la aprobación. El equipo de FaAAD UDP evalúa cada solicitud antes de aprobarla.</p>
+  <div class="aviso-previo" style="display: flex; align-items:top; gap:10px;">
+       <span class="material-symbols-outlined">
+     error
+    </span>
+    <p style="margin-top: 2px;">El registro no garantiza la aprobación. El equipo de FaAAD UDP evalúa cada solicitud antes de aprobarla.</p>
   </div>
 
   <form id="projectForm" novalidate>
@@ -1043,33 +1139,33 @@
           '<p class="field-error" id="err-descripcionExtension-' + id + '">Este campo es obligatorio.</p>' +
         '</div>' +
         '<div class="field">' +
-          '<label for="convenioExtension-' + id + '">¿Está en convenio? <span class="req">*</span></label>' +
-          '<select id="convenioExtension-' + id + '" required>' +
-            '<option value="">Selecciona</option>' +
-            '<option value="Sí">Sí</option>' +
-            '<option value="No">No</option>' +
-          '</select>' +
+          '<label>¿Está en convenio? <span class="req">*</span></label>' +
+          '<div class="radio-chips" id="convenioExtension-' + id + '" data-required="true">' +
+            '<label class="radio-chip"><input type="radio" name="convenioExtension-' + id + '" value="Sí" id="convenioExtension-' + id + '-si"><span>Sí</span></label>' +
+            '<label class="radio-chip"><input type="radio" name="convenioExtension-' + id + '" value="No" id="convenioExtension-' + id + '-no"><span>No</span></label>' +
+          '</div>' +
           '<p class="field-error" id="err-convenioExtension-' + id + '">Selecciona una opción.</p>' +
         '</div>' +
         '<div class="field" id="institucionConvenioWrapExtension-' + id + '" style="display:none">' +
           '<label for="institucionConvenioExtension-' + id + '">Institución con convenio</label>' +
           '<select id="institucionConvenioExtension-' + id + '">' +
             '<option value="">Selecciona una institución</option>' +
-            '<option value="Universidad de Chile">Universidad de Chile</option>' +
-            '<option value="Pontificia Universidad Católica de Chile">Pontificia Universidad Católica de Chile</option>' +
-            '<option value="Universidad de Santiago de Chile">Universidad de Santiago de Chile</option>' +
-            '<option value="Universidad Técnica Federico Santa María">Universidad Técnica Federico Santa María</option>' +
-            '<option value="Universidad Andrés Bello">Universidad Andrés Bello</option>' +
-            '<option value="Universidad Mayor">Universidad Mayor</option>' +
-            '<option value="Universidad Alberto Hurtado">Universidad Alberto Hurtado</option>' +
-            '<option value="Universidad de Concepción">Universidad de Concepción</option>' +
-            '<option value="Universidad Austral de Chile">Universidad Austral de Chile</option>' +
-            '<option value="Universidad de Valparaíso">Universidad de Valparaíso</option>' +
+            '<option value="Museo de la Solidaridad Salvador Allende">Museo de la Solidaridad Salvador Allende</option>' +
+            '<option value="Centro Cultural CEINA">Centro Cultural CEINA</option>' +
             '<option value="Museo Nacional de Bellas Artes">Museo Nacional de Bellas Artes</option>' +
-            '<option value="Centro Cultural Gabriela Mistral (GAM)">Centro Cultural Gabriela Mistral (GAM)</option>' +
-            '<option value="Fundación Imagen de Chile">Fundación Imagen de Chile</option>' +
-            '<option value="Ministerio de las Culturas, las Artes y el Patrimonio">Ministerio de las Culturas, las Artes y el Patrimonio</option>' +
-            '<option value="CORFO">CORFO</option>' +
+            '<option value="Biblioteca Nacional de Chile">Biblioteca Nacional de Chile</option>' +
+            '<option value="Teatro Municipal de Santiago">Teatro Municipal de Santiago</option>' +
+            '<option value="Museo Interactivo Mirador">Museo Interactivo Mirador</option>' +
+            '<option value="Museo de Artes Visuales">Museo de Artes Visuales</option>' +
+            '<option value="Museo Artequín">Museo Artequín</option>' +
+            '<option value="Empresa de Ferrocarriles del Estado">Empresa de Ferrocarriles del Estado</option>' +
+            '<option value="Museo de la Memoria y los Derechos Humanos">Museo de la Memoria y los Derechos Humanos</option>' +
+            '<option value="Museo de la Educación Gabriela Mistral">Museo de la Educación Gabriela Mistral</option>' +
+            '<option value="Fundación TECHO Chile">Fundación TECHO Chile</option>' +
+            '<option value="Municipalidad de Recoleta">Municipalidad de Recoleta</option>' +
+            '<option value="MOBIL Arquitectos">MOBIL Arquitectos</option>' +
+            '<option value="Asociación de Oficinas de Arquitectura">Asociación de Oficinas de Arquitectura</option>' +
+            '<option value="Galería Isabel Croxatto">Galería Isabel Croxatto</option>' +
             '<option value="Otra institución">Otra institución</option>' +
           '</select>' +
         '</div>' +
@@ -1112,12 +1208,11 @@
           '<p class="field-error" id="err-fechaHoraExtension-' + id + '">Este campo es obligatorio.</p>' +
         '</div>' +
         '<div class="field">' +
-          '<label for="necesitaSalaExtension-' + id + '">¿Necesita una sala? <span class="req">*</span></label>' +
-          '<select id="necesitaSalaExtension-' + id + '" required>' +
-            '<option value="">Selecciona</option>' +
-            '<option value="No">No</option>' +
-            '<option value="Sí">Sí</option>' +
-          '</select>' +
+          '<label>¿Necesita una sala? <span class="req">*</span></label>' +
+          '<div class="radio-chips" id="necesitaSalaExtension-' + id + '" data-required="true">' +
+            '<label class="radio-chip"><input type="radio" name="necesitaSalaExtension-' + id + '" value="Sí" id="necesitaSalaExtension-' + id + '-si"><span>Sí</span></label>' +
+            '<label class="radio-chip"><input type="radio" name="necesitaSalaExtension-' + id + '" value="No" id="necesitaSalaExtension-' + id + '-no"><span>No</span></label>' +
+          '</div>' +
           '<p class="field-error" id="err-necesitaSalaExtension-' + id + '">Selecciona una opción.</p>' +
         '</div>' +
         '<div class="field" id="preferenciaSalaWrapExtension-' + id + '" style="display:none">' +
@@ -1151,6 +1246,66 @@
           '</div>' +
           '<p class="field-error" id="err-apoyoGraficoExtension-' + id + '">Selecciona una opción.</p>' +
         '</div>' +
+        '<div class="field" id="apoyoGraficoPanelExtension-' + id + '" style="display:none">' +
+          '<div class="apoyo-grafico-panel">' +
+            '<p class="panel-title">Imágenes para elaboración de gráficas</p>' +
+            '<div class="grafico-item">' +
+              '<div class="grafico-item-header"><span class="grafico-item-num">01</span><span class="grafico-item-label">Pantallas</span></div>' +
+              '<p class="grafico-item-spec">Imagen horizontal — 1920 × 1080 px</p>' +
+              '<div class="drop-zone" id="dropPantallasExtension-' + id + '" tabindex="0">' +
+                '<strong>Arrastra imágenes o haz clic para seleccionar</strong>' +
+                '<span>JPG, PNG, WEBP · Máx 10 MB por archivo</span>' +
+                '<input type="file" class="file-input-hidden" id="filePantallasExtension-' + id + '" multiple accept="image/*">' +
+                '<span class="drop-counter" id="cntPantallasExtension-' + id + '"></span>' +
+              '</div>' +
+              '<div class="preview-grid" id="prevPantallasExtension-' + id + '"></div>' +
+            '</div>' +
+            '<div class="grafico-item">' +
+              '<div class="grafico-item-header"><span class="grafico-item-num">02</span><span class="grafico-item-label">Post</span></div>' +
+              '<p class="grafico-item-spec">Imagen cuadrada — 2048 × 2048 px</p>' +
+              '<div class="drop-zone" id="dropPostExtension-' + id + '" tabindex="0">' +
+                '<strong>Arrastra imágenes o haz clic para seleccionar</strong>' +
+                '<span>JPG, PNG, WEBP · Máx 10 MB por archivo</span>' +
+                '<input type="file" class="file-input-hidden" id="filePostExtension-' + id + '" multiple accept="image/*">' +
+                '<span class="drop-counter" id="cntPostExtension-' + id + '"></span>' +
+              '</div>' +
+              '<div class="preview-grid" id="prevPostExtension-' + id + '"></div>' +
+            '</div>' +
+            '<div class="grafico-item">' +
+              '<div class="grafico-item-header"><span class="grafico-item-num">03</span><span class="grafico-item-label">Historias</span></div>' +
+              '<p class="grafico-item-spec">Imagen vertical — 1080 × 1920 px</p>' +
+              '<div class="drop-zone" id="dropHistoriasExtension-' + id + '" tabindex="0">' +
+                '<strong>Arrastra imágenes o haz clic para seleccionar</strong>' +
+                '<span>JPG, PNG, WEBP · Máx 10 MB por archivo</span>' +
+                '<input type="file" class="file-input-hidden" id="fileHistoriasExtension-' + id + '" multiple accept="image/*">' +
+                '<span class="drop-counter" id="cntHistoriasExtension-' + id + '"></span>' +
+              '</div>' +
+              '<div class="preview-grid" id="prevHistoriasExtension-' + id + '"></div>' +
+            '</div>' +
+            '<div class="grafico-item">' +
+              '<div class="grafico-item-header"><span class="grafico-item-num">04</span><span class="grafico-item-label">Logos</span></div>' +
+              '<p class="grafico-item-spec">Si es necesario incluir instituciones externas</p>' +
+              '<div class="drop-zone" id="dropLogosExtension-' + id + '" tabindex="0">' +
+                '<strong>Arrastra archivos o haz clic para seleccionar</strong>' +
+                '<span>PNG, SVG, AI, EPS · Máx 10 MB por archivo</span>' +
+                '<input type="file" class="file-input-hidden" id="fileLogosExtension-' + id + '" multiple accept="image/*,.svg,.ai,.eps">' +
+                '<span class="drop-counter" id="cntLogosExtension-' + id + '"></span>' +
+              '</div>' +
+              '<div class="preview-grid" id="prevLogosExtension-' + id + '"></div>' +
+            '</div>' +
+            '<div class="grafico-item">' +
+              '<div class="grafico-item-header"><span class="grafico-item-num">05</span><span class="grafico-item-label">Imágenes complementarias</span></div>' +
+              '<p class="grafico-item-spec">Opcional — cualquier material adicional de referencia</p>' +
+              '<div class="drop-zone" id="dropCompExtension-' + id + '" tabindex="0">' +
+                '<strong>Arrastra imágenes o haz clic para seleccionar</strong>' +
+                '<span>JPG, PNG, WEBP · Máx 10 MB por archivo</span>' +
+                '<input type="file" class="file-input-hidden" id="fileCompExtension-' + id + '" multiple accept="image/*">' +
+                '<span class="drop-counter" id="cntCompExtension-' + id + '"></span>' +
+              '</div>' +
+              '<div class="preview-grid" id="prevCompExtension-' + id + '"></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
         '<div class="field">' +
           '<label for="solicitudesEspecialesExtension-' + id + '">Solicitudes especiales</label>' +
           '<div class="tags-grid">' +
@@ -1158,6 +1313,19 @@
             '<label class="tag-chip"><input type="checkbox" name="solicitudesEspecialesExtension-' + id + '" value="Pasador de diapositivas"><span>Pasador de diapositivas</span></label>' +
             '<label class="tag-chip"><input type="checkbox" name="solicitudesEspecialesExtension-' + id + '" value="Pantalla extra"><span>Pantalla extra</span></label>' +
             '<label class="tag-chip"><input type="checkbox" name="solicitudesEspecialesExtension-' + id + '" value="Estacionamiento"><span>Estacionamiento</span></label>' +
+          '</div>' +
+        '</div>' +
+        '<div class="foto-registro-section">' +
+          '<p class="section-subtitle">Registro post evento</p>' +
+          '<div class="field">' +
+            '<label>Subir fotos y registros</label>' +
+            '<div class="drop-zone" id="dropRegistroExtension-' + id + '" tabindex="0">' +
+              '<strong>Arrastra imágenes o haz clic para seleccionar</strong>' +
+              '<span>JPG, PNG, WEBP, MP4 · Máx 10 MB por archivo</span>' +
+              '<input type="file" class="file-input-hidden" id="fileRegistroExtension-' + id + '" multiple accept="image/*,video/mp4">' +
+              '<span class="drop-counter" id="cntRegistroExtension-' + id + '"></span>' +
+            '</div>' +
+            '<div class="preview-grid" id="prevRegistroExtension-' + id + '"></div>' +
           '</div>' +
         '</div>' +
       '</div>' +
@@ -1209,6 +1377,19 @@
           '<input type="text" id="asistentesExterna-' + id + '" placeholder="Respuesta corta" required>' +
           '<p class="field-error" id="err-asistentesExterna-' + id + '">Este campo es obligatorio.</p>' +
         '</div>' +
+        '<div class="foto-registro-section">' +
+          '<p class="section-subtitle">Registro post actividad</p>' +
+          '<div class="field">' +
+            '<label>Subir fotos y registros</label>' +
+            '<div class="drop-zone" id="dropRegistroExterna-' + id + '" tabindex="0">' +
+              '<strong>Arrastra imágenes o haz clic para seleccionar</strong>' +
+              '<span>JPG, PNG, WEBP, MP4 · Máx 10 MB por archivo</span>' +
+              '<input type="file" class="file-input-hidden" id="fileRegistroExterna-' + id + '" multiple accept="image/*,video/mp4">' +
+              '<span class="drop-counter" id="cntRegistroExterna-' + id + '"></span>' +
+            '</div>' +
+            '<div class="preview-grid" id="prevRegistroExterna-' + id + '"></div>' +
+          '</div>' +
+        '</div>' +
       '</div>' +
 
       // Proyectos de Investigación, creación e innovación
@@ -1225,21 +1406,19 @@
           '<p class="field-error" id="err-descripcionInvestigacion-' + id + '">Este campo es obligatorio.</p>' +
         '</div>' +
         '<div class="field">' +
-          '<label for="financiamientoUdpInvestigacion-' + id + '">¿Cuenta con financiamiento UDP? <span class="req">*</span></label>' +
-          '<select id="financiamientoUdpInvestigacion-' + id + '" required>' +
-            '<option value="">Selecciona</option>' +
-            '<option value="Sí">Sí</option>' +
-            '<option value="No">No</option>' +
-          '</select>' +
+          '<label>¿Cuenta con financiamiento UDP? <span class="req">*</span></label>' +
+          '<div class="radio-chips" id="financiamientoUdpInvestigacion-' + id + '" data-required="true">' +
+            '<label class="radio-chip"><input type="radio" name="financiamientoUdpInvestigacion-' + id + '" value="Sí"><span>Sí</span></label>' +
+            '<label class="radio-chip"><input type="radio" name="financiamientoUdpInvestigacion-' + id + '" value="No"><span>No</span></label>' +
+          '</div>' +
           '<p class="field-error" id="err-financiamientoUdpInvestigacion-' + id + '">Selecciona una opción.</p>' +
         '</div>' +
         '<div class="field">' +
-          '<label for="financiamientoExternoInvestigacion-' + id + '">¿Cuenta con financiamiento externo? <span class="req">*</span></label>' +
-          '<select id="financiamientoExternoInvestigacion-' + id + '" required>' +
-            '<option value="">Selecciona</option>' +
-            '<option value="Sí">Sí</option>' +
-            '<option value="No">No</option>' +
-          '</select>' +
+          '<label>¿Cuenta con financiamiento externo? <span class="req">*</span></label>' +
+          '<div class="radio-chips" id="financiamientoExternoInvestigacion-' + id + '" data-required="true">' +
+            '<label class="radio-chip"><input type="radio" name="financiamientoExternoInvestigacion-' + id + '" value="Sí"><span>Sí</span></label>' +
+            '<label class="radio-chip"><input type="radio" name="financiamientoExternoInvestigacion-' + id + '" value="No"><span>No</span></label>' +
+          '</div>' +
           '<p class="field-error" id="err-financiamientoExternoInvestigacion-' + id + '">Selecciona una opción.</p>' +
         '</div>' +
         '<div class="field">' +
@@ -1267,12 +1446,11 @@
           '<input type="text" id="montoAdjudicadoInvestigacion-' + id + '" placeholder="Respuesta corta">' +
         '</div>' +
         '<div class="field">' +
-          '<label for="rolUdpInvestigacion-' + id + '">Rol de la UDP <span class="req">*</span></label>' +
-          '<select id="rolUdpInvestigacion-' + id + '" required>' +
-            '<option value="">Selecciona</option>' +
-            '<option value="Principal">Principal</option>' +
-            '<option value="Colaborador">Colaborador</option>' +
-          '</select>' +
+          '<label>Rol de la UDP <span class="req">*</span></label>' +
+          '<div class="radio-chips" id="rolUdpInvestigacion-' + id + '" data-required="true">' +
+            '<label class="radio-chip"><input type="radio" name="rolUdpInvestigacion-' + id + '" value="Principal"><span>Principal</span></label>' +
+            '<label class="radio-chip"><input type="radio" name="rolUdpInvestigacion-' + id + '" value="Colaborador"><span>Colaborador</span></label>' +
+          '</div>' +
           '<p class="field-error" id="err-rolUdpInvestigacion-' + id + '">Selecciona una opción.</p>' +
         '</div>' +
         '<div class="field">' +
@@ -1283,6 +1461,19 @@
         '<div class="field">' +
           '<label for="investigadoresColaboradoresInvestigacion-' + id + '">Investigadores colaboradores y afiliación institucional</label>' +
           '<input type="text" id="investigadoresColaboradoresInvestigacion-' + id + '" placeholder="Respuesta corta">' +
+        '</div>' +
+        '<div class="foto-registro-section">' +
+          '<p class="section-subtitle">Registro del proyecto</p>' +
+          '<div class="field">' +
+            '<label>Subir fotos y registros</label>' +
+            '<div class="drop-zone" id="dropRegistroInvestigacion-' + id + '" tabindex="0">' +
+              '<strong>Arrastra imágenes o haz clic para seleccionar</strong>' +
+              '<span>JPG, PNG, WEBP, PDF · Máx 10 MB por archivo</span>' +
+              '<input type="file" class="file-input-hidden" id="fileRegistroInvestigacion-' + id + '" multiple accept="image/*,.pdf">' +
+              '<span class="drop-counter" id="cntRegistroInvestigacion-' + id + '"></span>' +
+            '</div>' +
+            '<div class="preview-grid" id="prevRegistroInvestigacion-' + id + '"></div>' +
+          '</div>' +
         '</div>' +
       '</div>'
     );
@@ -1323,55 +1514,45 @@
 
   // ── Conectar eventos ─────────────────────────────────────────
   function wireCard(id) {
-    var card         = document.getElementById('card-' + id);
+    var card          = document.getElementById('card-' + id);
     var tipoSolicitud = document.getElementById('tipoSolicitud-' + id);
-    var necesitaSala = document.getElementById('necesitaSalaExtension-' + id);
-    var apoyoGrafico = document.getElementById('apoyoGraficoExtension-' + id);
-    var removeBtn    = card.querySelector('.remove-card-btn');
+    var removeBtn     = card.querySelector('.remove-card-btn');
 
-      // Mostrar/ocultar secciones basadas en tipo de solicitud
+    // Helper: leer valor de radio-chips group
+    function radioVal(name) {
+      var checked = document.querySelector('input[name="' + name + '"]:checked');
+      return checked ? checked.value : '';
+    }
+
+    // Mostrar/ocultar secciones basadas en tipo de solicitud
     tipoSolicitud.addEventListener('change', function() {
       var val = this.value;
-      var extensionEl = document.getElementById('solicitud-extension-' + id);
-      var externaEl = document.getElementById('solicitud-externa-' + id);
-      var investigacionEl = document.getElementById('solicitud-investigacion-' + id);
-      if (val === 'extension') {
-        extensionEl.style.display = 'block';
-        externaEl.style.display = 'none';
-        investigacionEl.style.display = 'none';
-      } else if (val === 'externa') {
-        extensionEl.style.display = 'none';
-        externaEl.style.display = 'block';
-        investigacionEl.style.display = 'none';
-      } else if (val === 'investigacion') {
-        extensionEl.style.display = 'none';
-        externaEl.style.display = 'none';
-        investigacionEl.style.display = 'block';
-      } else {
-        extensionEl.style.display = 'none';
-        externaEl.style.display = 'none';
-        investigacionEl.style.display = 'none';
-      }
+      document.getElementById('solicitud-extension-' + id).style.display   = val === 'extension'   ? 'block' : 'none';
+      document.getElementById('solicitud-externa-' + id).style.display     = val === 'externa'     ? 'block' : 'none';
+      document.getElementById('solicitud-investigacion-' + id).style.display = val === 'investigacion' ? 'block' : 'none';
       this.classList.remove('error');
       hideFieldError('tipoSolicitud-' + id);
       hideErrorSummary();
     });
 
-    // Mostrar preferencia de sala si necesita sala
-    necesitaSala.addEventListener('change', function() {
-      var prefWrap = document.getElementById('preferenciaSalaWrapExtension-' + id);
-      var otroWrap = document.getElementById('preferenciaSalaOtroWrapExtension-' + id);
-      var prefSel  = document.getElementById('preferenciaSalaExtension-' + id);
-      if (this.value === 'Sí') {
-        prefWrap.style.display = 'block';
-      } else {
-        prefWrap.style.display = 'none';
-        if (otroWrap) otroWrap.style.display = 'none';
-        if (prefSel)  prefSel.value = '';
-      }
+    // ── necesitaSala (radio-chips) ────────────────────────────
+    card.querySelectorAll('input[name="necesitaSalaExtension-' + id + '"]').forEach(function(radio) {
+      radio.addEventListener('change', function() {
+        var prefWrap = document.getElementById('preferenciaSalaWrapExtension-' + id);
+        var otroWrap = document.getElementById('preferenciaSalaOtroWrapExtension-' + id);
+        var prefSel  = document.getElementById('preferenciaSalaExtension-' + id);
+        if (this.value === 'Sí') {
+          prefWrap.style.display = 'block';
+        } else {
+          prefWrap.style.display = 'none';
+          if (otroWrap) otroWrap.style.display = 'none';
+          if (prefSel)  prefSel.value = '';
+        }
+        hideFieldError('necesitaSalaExtension-' + id);
+      });
     });
 
-    // Mostrar campo libre cuando se elige "Otro" en preferencia de sala
+    // Sala "Otro" → campo libre
     var prefSalaEl = document.getElementById('preferenciaSalaExtension-' + id);
     if (prefSalaEl) {
       prefSalaEl.addEventListener('change', function() {
@@ -1380,14 +1561,31 @@
       });
     }
 
-    // Mostrar listado de instituciones si está en convenio
-    var convenioEl = document.getElementById('convenioExtension-' + id);
-    if (convenioEl) {
-      convenioEl.addEventListener('change', function() {
+    // ── convenio (radio-chips) ────────────────────────────────
+    card.querySelectorAll('input[name="convenioExtension-' + id + '"]').forEach(function(radio) {
+      radio.addEventListener('change', function() {
         var instWrap = document.getElementById('institucionConvenioWrapExtension-' + id);
         if (instWrap) instWrap.style.display = this.value === 'Sí' ? 'block' : 'none';
+        hideFieldError('convenioExtension-' + id);
       });
-    }
+    });
+
+    // ── apoyo gráfico → panel de imágenes ────────────────────
+    card.querySelectorAll('input[name="apoyoGraficoExtension-' + id + '"]').forEach(function(radio) {
+      radio.addEventListener('change', function() {
+        var panel = document.getElementById('apoyoGraficoPanelExtension-' + id);
+        if (panel) panel.style.display = this.value === 'Sí' ? 'block' : 'none';
+        if (this.value === 'Sí') {
+          wireDropZonesApoyo(id);
+        }
+        hideFieldError('apoyoGraficoExtension-' + id);
+      });
+    });
+
+    // ── Drop zones: registros ─────────────────────────────────
+    wireDropZone('dropRegistroExtension-' + id, 'fileRegistroExtension-' + id, 'cntRegistroExtension-' + id, 'prevRegistroExtension-' + id);
+    wireDropZone('dropRegistroExterna-' + id,   'fileRegistroExterna-' + id,   'cntRegistroExterna-' + id,   'prevRegistroExterna-' + id);
+    wireDropZone('dropRegistroInvestigacion-' + id, 'fileRegistroInvestigacion-' + id, 'cntRegistroInvestigacion-' + id, 'prevRegistroInvestigacion-' + id);
 
     removeBtn.addEventListener('click', function() {
       if (cardOrder.length > 1 && confirm('¿Eliminar esta solicitud del formulario?')) {
@@ -1397,7 +1595,6 @@
 
     // Limpiar errores inline al corregir
     var requiredFields = ['tipoSolicitud'];
-    // Agregar campos requeridos dinámicos según tipo
     requiredFields.forEach(function(fid) {
       var el = document.getElementById(fid + '-' + id);
       if (!el) return;
@@ -1410,6 +1607,86 @@
         });
       });
     });
+  }
+
+  // Wire apoyo gráfico drop zones (called lazily when panel opens)
+  var wiredApoyo = {};
+  function wireDropZonesApoyo(id) {
+    if (wiredApoyo[id]) return;
+    wiredApoyo[id] = true;
+    var slots = [
+      ['dropPantallasExtension-' + id, 'filePantallasExtension-' + id, 'cntPantallasExtension-' + id, 'prevPantallasExtension-' + id],
+      ['dropPostExtension-' + id,      'filePostExtension-' + id,      'cntPostExtension-' + id,      'prevPostExtension-' + id],
+      ['dropHistoriasExtension-' + id, 'fileHistoriasExtension-' + id, 'cntHistoriasExtension-' + id, 'prevHistoriasExtension-' + id],
+      ['dropLogosExtension-' + id,     'fileLogosExtension-' + id,     'cntLogosExtension-' + id,     'prevLogosExtension-' + id],
+      ['dropCompExtension-' + id,      'fileCompExtension-' + id,      'cntCompExtension-' + id,      'prevCompExtension-' + id]
+    ];
+    slots.forEach(function(s) { wireDropZone(s[0], s[1], s[2], s[3]); });
+  }
+
+  // Generic drop zone wiring
+  function wireDropZone(dropId, fileId, cntId, prevId) {
+    var drop = document.getElementById(dropId);
+    var inp  = document.getElementById(fileId);
+    if (!drop || !inp) return;
+    drop.addEventListener('click', function(e) {
+      if (e.target.classList.contains('remove-btn')) return;
+      inp.click();
+    });
+    drop.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inp.click(); }
+    });
+    drop.addEventListener('dragover', function(e) { e.preventDefault(); drop.classList.add('dragover'); });
+    drop.addEventListener('dragleave', function() { drop.classList.remove('dragover'); });
+    drop.addEventListener('drop', function(e) {
+      e.preventDefault(); drop.classList.remove('dragover');
+      handleFiles(e.dataTransfer.files, cntId, prevId);
+    });
+    inp.addEventListener('change', function() {
+      handleFiles(inp.files, cntId, prevId);
+      inp.value = '';
+    });
+  }
+
+  function handleFiles(files, cntId, prevId) {
+    var cnt  = document.getElementById(cntId);
+    var prev = document.getElementById(prevId);
+    if (!cnt || !prev) return;
+    Array.from(files).forEach(function(file) {
+      if (!file.type.startsWith('image/') && file.type !== 'application/pdf') return;
+      var item = document.createElement('div');
+      item.className = 'preview-item';
+      if (file.type.startsWith('image/')) {
+        var img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        item.appendChild(img);
+      } else {
+        var lbl = document.createElement('div');
+        lbl.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100%;font-family:NectoMono,monospace;font-size:0.7rem;color:#444;padding:8px;text-align:center;';
+        lbl.textContent = file.name;
+        item.appendChild(lbl);
+      }
+      var fl = document.createElement('span');
+      fl.className = 'file-label';
+      fl.textContent = file.name;
+      item.appendChild(fl);
+      var rb = document.createElement('button');
+      rb.type = 'button';
+      rb.className = 'remove-btn';
+      rb.textContent = '×';
+      rb.addEventListener('click', function() { item.remove(); updateCounter(cntId, prevId); });
+      item.appendChild(rb);
+      prev.appendChild(item);
+    });
+    updateCounter(cntId, prevId);
+  }
+
+  function updateCounter(cntId, prevId) {
+    var cnt  = document.getElementById(cntId);
+    var prev = document.getElementById(prevId);
+    if (!cnt || !prev) return;
+    var n = prev.querySelectorAll('.preview-item').length;
+    cnt.textContent = n > 0 ? n + (n === 1 ? ' archivo' : ' archivos') : '';
   }
 
   // ── Validación ───────────────────────────────────────────────
@@ -1475,9 +1752,19 @@
           { fid: 'investigadorResponsableInvestigacion', label: 'Investigador responsable y afiliación institucional (Solicitud ' + num + ')' }
         ]);
       }
-      cardFields.forEach(function(f) {
+    cardFields.forEach(function(f) {
         var el = document.getElementById(f.fid + '-' + id);
-        if (el && !el.value.trim()) {
+        if (!el) return;
+        // radio-chips: el es el contenedor div, leer radio checked
+        if (el.classList && el.classList.contains('radio-chips')) {
+          var checked = document.querySelector('input[name="' + f.fid + '-' + id + '"]:checked');
+          if (!checked) {
+            el.style.outline = '2px solid #b83a24';
+            showFieldError(f.fid + '-' + id);
+            ok = false;
+            errFields.push({ label: f.label, id: f.fid + '-' + id });
+          }
+        } else if (!el.value.trim()) {
           el.classList.add('error');
           showFieldError(f.fid + '-' + id);
           ok = false;
@@ -1596,7 +1883,7 @@
     if (tipo === 'extension') {
       payload.tituloExtension = cval(id, 'tituloExtension');
       payload.descripcionExtension = cval(id, 'descripcionExtension');
-      payload.convenioExtension = cval(id, 'convenioExtension');
+      payload.convenioExtension = getRadio(id, 'convenioExtension');
       payload.institucionConvenioExtension = cval(id, 'institucionConvenioExtension');
       payload.participantesNombreExtension = cval(id, 'participantesNombreExtension');
       payload.participantesApellidoExtension = cval(id, 'participantesApellidoExtension');
@@ -1605,10 +1892,10 @@
       payload.biografiaExtension = cval(id, 'biografiaExtension');
       payload.rrssExtension = cval(id, 'rrssExtension');
       payload.fechaHoraExtension = cval(id, 'fechaHoraExtension');
-      payload.necesitaSalaExtension = cval(id, 'necesitaSalaExtension');
+      payload.necesitaSalaExtension = getRadio(id, 'necesitaSalaExtension');
       var salaVal = cval(id, 'preferenciaSalaExtension');
       payload.preferenciaSalaExtension = salaVal === 'Otro' ? cval(id, 'preferenciaSalaOtroExtension') : salaVal;
-      payload.apoyoGraficoExtension = cval(id, 'apoyoGraficoExtension');
+      payload.apoyoGraficoExtension = getRadio(id, 'apoyoGraficoExtension');
       payload.solicitudesEspecialesExtension = getChecked(id, 'solicitudesEspecialesExtension');
     } else if (tipo === 'externa') {
       payload.institucionExterna = cval(id, 'institucionExterna');
@@ -1623,15 +1910,15 @@
     } else if (tipo === 'investigacion') {
       payload.tituloInvestigacion = cval(id, 'tituloInvestigacion');
       payload.descripcionInvestigacion = cval(id, 'descripcionInvestigacion');
-      payload.financiamientoUdpInvestigacion = cval(id, 'financiamientoUdpInvestigacion');
-      payload.financiamientoExternoInvestigacion = cval(id, 'financiamientoExternoInvestigacion');
+      payload.financiamientoUdpInvestigacion = getRadio(id, 'financiamientoUdpInvestigacion');
+      payload.financiamientoExternoInvestigacion = getRadio(id, 'financiamientoExternoInvestigacion');
       payload.agenciaFinancieraInvestigacion = cval(id, 'agenciaFinancieraInvestigacion');
       payload.fondoInvestigacion = cval(id, 'fondoInvestigacion');
       payload.anioAdjudicacionInvestigacion = cval(id, 'anioAdjudicacionInvestigacion');
       payload.anioInicioInvestigacion = cval(id, 'anioInicioInvestigacion');
       payload.anioTerminoInvestigacion = cval(id, 'anioTerminoInvestigacion');
       payload.montoAdjudicadoInvestigacion = cval(id, 'montoAdjudicadoInvestigacion');
-      payload.rolUdpInvestigacion = cval(id, 'rolUdpInvestigacion');
+      payload.rolUdpInvestigacion = getRadio(id, 'rolUdpInvestigacion');
       payload.investigadorResponsableInvestigacion = cval(id, 'investigadorResponsableInvestigacion');
       payload.investigadoresColaboradoresInvestigacion = cval(id, 'investigadoresColaboradoresInvestigacion');
     }
@@ -1641,6 +1928,10 @@
   function cval(id, field) {
     var el = document.getElementById(field + '-' + id);
     return el && typeof el.value === 'string' ? el.value.trim() : '';
+  }
+  function getRadio(id, name) {
+    var checked = document.querySelector('input[name="' + name + '-' + id + '"]:checked');
+    return checked ? checked.value : '';
   }
   function getChecked(id, name) {
     return Array.from(document.querySelectorAll('input[name="' + name + '-' + id + '"]:checked'))
