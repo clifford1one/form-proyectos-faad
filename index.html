@@ -1051,10 +1051,51 @@
           '</select>' +
           '<p class="field-error" id="err-convenioExtension-' + id + '">Selecciona una opción.</p>' +
         '</div>' +
-        '<div class="field">' +
-          '<label for="participantesExtension-' + id + '">Participantes (Nombre Apellido - Cargo, Institución) <span class="req">*</span></label>' +
-          '<input type="text" id="participantesExtension-' + id + '" placeholder="Respuesta corta" required>' +
-          '<p class="field-error" id="err-participantesExtension-' + id + '">Este campo es obligatorio.</p>' +
+        '<div class="field" id="institucionConvenioWrapExtension-' + id + '" style="display:none">' +
+          '<label for="institucionConvenioExtension-' + id + '">Institución con convenio</label>' +
+          '<select id="institucionConvenioExtension-' + id + '">' +
+            '<option value="">Selecciona una institución</option>' +
+            '<option value="Universidad de Chile">Universidad de Chile</option>' +
+            '<option value="Pontificia Universidad Católica de Chile">Pontificia Universidad Católica de Chile</option>' +
+            '<option value="Universidad de Santiago de Chile">Universidad de Santiago de Chile</option>' +
+            '<option value="Universidad Técnica Federico Santa María">Universidad Técnica Federico Santa María</option>' +
+            '<option value="Universidad Andrés Bello">Universidad Andrés Bello</option>' +
+            '<option value="Universidad Mayor">Universidad Mayor</option>' +
+            '<option value="Universidad Alberto Hurtado">Universidad Alberto Hurtado</option>' +
+            '<option value="Universidad de Concepción">Universidad de Concepción</option>' +
+            '<option value="Universidad Austral de Chile">Universidad Austral de Chile</option>' +
+            '<option value="Universidad de Valparaíso">Universidad de Valparaíso</option>' +
+            '<option value="Museo Nacional de Bellas Artes">Museo Nacional de Bellas Artes</option>' +
+            '<option value="Centro Cultural Gabriela Mistral (GAM)">Centro Cultural Gabriela Mistral (GAM)</option>' +
+            '<option value="Fundación Imagen de Chile">Fundación Imagen de Chile</option>' +
+            '<option value="Ministerio de las Culturas, las Artes y el Patrimonio">Ministerio de las Culturas, las Artes y el Patrimonio</option>' +
+            '<option value="CORFO">CORFO</option>' +
+            '<option value="Otra institución">Otra institución</option>' +
+          '</select>' +
+        '</div>' +
+        '<div class="field-row">' +
+          '<div class="field">' +
+            '<label for="participantesNombreExtension-' + id + '">Nombre participante <span class="req">*</span></label>' +
+            '<input type="text" id="participantesNombreExtension-' + id + '" placeholder="Nombre" required>' +
+            '<p class="field-error" id="err-participantesNombreExtension-' + id + '">Este campo es obligatorio.</p>' +
+          '</div>' +
+          '<div class="field">' +
+            '<label for="participantesApellidoExtension-' + id + '">Apellido participante <span class="req">*</span></label>' +
+            '<input type="text" id="participantesApellidoExtension-' + id + '" placeholder="Apellido" required>' +
+            '<p class="field-error" id="err-participantesApellidoExtension-' + id + '">Este campo es obligatorio.</p>' +
+          '</div>' +
+        '</div>' +
+        '<div class="field-row">' +
+          '<div class="field">' +
+            '<label for="participantesCargoExtension-' + id + '">Cargo <span class="req">*</span></label>' +
+            '<input type="text" id="participantesCargoExtension-' + id + '" placeholder="Cargo" required>' +
+            '<p class="field-error" id="err-participantesCargoExtension-' + id + '">Este campo es obligatorio.</p>' +
+          '</div>' +
+          '<div class="field">' +
+            '<label for="participantesInstitucionExtension-' + id + '">Institución <span class="req">*</span></label>' +
+            '<input type="text" id="participantesInstitucionExtension-' + id + '" placeholder="Institución" required>' +
+            '<p class="field-error" id="err-participantesInstitucionExtension-' + id + '">Este campo es obligatorio.</p>' +
+          '</div>' +
         '</div>' +
         '<div class="field">' +
           '<label for="biografiaExtension-' + id + '">Biografía <span class="req">*</span></label>' +
@@ -1079,7 +1120,7 @@
           '</select>' +
           '<p class="field-error" id="err-necesitaSalaExtension-' + id + '">Selecciona una opción.</p>' +
         '</div>' +
-        '<div class="field" id="preferenciaSalaExtension-' + id + '" style="display:none">' +
+        '<div class="field" id="preferenciaSalaWrapExtension-' + id + '" style="display:none">' +
           '<label for="preferenciaSalaExtension-' + id + '">Preferencia de lugar</label>' +
           '<select id="preferenciaSalaExtension-' + id + '">' +
             '<option value="">Selecciona una sala</option>' +
@@ -1089,8 +1130,12 @@
             '<option value="Sala Cilindro Salvador Sanfuentes - 25 personas">Sala Cilindro Salvador Sanfuentes - 25 personas</option>' +
             '<option value="Aula Magna Facultad de Derecho - xx personas">Auditorio Facultad de Derecho - xx personas</option>' +
             '<option value="Auditorio Facultad de Derecho - xx personas">Auditorio Facultad de Derecho - xx personas</option>' +
-
-            '</select>' +
+            '<option value="Otro">Otro</option>' +
+          '</select>' +
+        '</div>' +
+        '<div class="field" id="preferenciaSalaOtroWrapExtension-' + id + '" style="display:none">' +
+          '<label for="preferenciaSalaOtroExtension-' + id + '">Especifica el lugar</label>' +
+          '<input type="text" id="preferenciaSalaOtroExtension-' + id + '" placeholder="Describe el lugar o sala que necesitas">' +
         '</div>' +
         '<div class="field">' +
           '<label>¿Solicitas apoyo gráfico? <span class="req">*</span></label>' +
@@ -1314,9 +1359,35 @@
 
     // Mostrar preferencia de sala si necesita sala
     necesitaSala.addEventListener('change', function() {
-      var prefEl = document.getElementById('preferenciaSalaExtension-' + id);
-      prefEl.style.display = this.value === 'Sí' ? 'block' : 'none';
+      var prefWrap = document.getElementById('preferenciaSalaWrapExtension-' + id);
+      var otroWrap = document.getElementById('preferenciaSalaOtroWrapExtension-' + id);
+      var prefSel  = document.getElementById('preferenciaSalaExtension-' + id);
+      if (this.value === 'Sí') {
+        prefWrap.style.display = 'block';
+      } else {
+        prefWrap.style.display = 'none';
+        if (otroWrap) otroWrap.style.display = 'none';
+        if (prefSel)  prefSel.value = '';
+      }
     });
+
+    // Mostrar campo libre cuando se elige "Otro" en preferencia de sala
+    var prefSalaEl = document.getElementById('preferenciaSalaExtension-' + id);
+    if (prefSalaEl) {
+      prefSalaEl.addEventListener('change', function() {
+        var otroWrap = document.getElementById('preferenciaSalaOtroWrapExtension-' + id);
+        if (otroWrap) otroWrap.style.display = this.value === 'Otro' ? 'block' : 'none';
+      });
+    }
+
+    // Mostrar listado de instituciones si está en convenio
+    var convenioEl = document.getElementById('convenioExtension-' + id);
+    if (convenioEl) {
+      convenioEl.addEventListener('change', function() {
+        var instWrap = document.getElementById('institucionConvenioWrapExtension-' + id);
+        if (instWrap) instWrap.style.display = this.value === 'Sí' ? 'block' : 'none';
+      });
+    }
 
     removeBtn.addEventListener('click', function() {
       if (cardOrder.length > 1 && confirm('¿Eliminar esta solicitud del formulario?')) {
@@ -1374,7 +1445,10 @@
           { fid: 'tituloExtension', label: 'Título (Solicitud ' + num + ')' },
           { fid: 'descripcionExtension', label: 'Descripción de la actividad (Solicitud ' + num + ')' },
           { fid: 'convenioExtension', label: '¿Está en convenio? (Solicitud ' + num + ')' },
-          { fid: 'participantesExtension', label: 'Participantes (Solicitud ' + num + ')' },
+          { fid: 'participantesNombreExtension', label: 'Nombre participante (Solicitud ' + num + ')' },
+          { fid: 'participantesApellidoExtension', label: 'Apellido participante (Solicitud ' + num + ')' },
+          { fid: 'participantesCargoExtension', label: 'Cargo participante (Solicitud ' + num + ')' },
+          { fid: 'participantesInstitucionExtension', label: 'Institución participante (Solicitud ' + num + ')' },
           { fid: 'biografiaExtension', label: 'Biografía (Solicitud ' + num + ')' },
           { fid: 'fechaHoraExtension', label: 'Fecha y hora (Solicitud ' + num + ')' },
           { fid: 'necesitaSalaExtension', label: '¿Necesita una sala? (Solicitud ' + num + ')' },
@@ -1523,12 +1597,17 @@
       payload.tituloExtension = cval(id, 'tituloExtension');
       payload.descripcionExtension = cval(id, 'descripcionExtension');
       payload.convenioExtension = cval(id, 'convenioExtension');
-      payload.participantesExtension = cval(id, 'participantesExtension');
+      payload.institucionConvenioExtension = cval(id, 'institucionConvenioExtension');
+      payload.participantesNombreExtension = cval(id, 'participantesNombreExtension');
+      payload.participantesApellidoExtension = cval(id, 'participantesApellidoExtension');
+      payload.participantesCargoExtension = cval(id, 'participantesCargoExtension');
+      payload.participantesInstitucionExtension = cval(id, 'participantesInstitucionExtension');
       payload.biografiaExtension = cval(id, 'biografiaExtension');
       payload.rrssExtension = cval(id, 'rrssExtension');
       payload.fechaHoraExtension = cval(id, 'fechaHoraExtension');
       payload.necesitaSalaExtension = cval(id, 'necesitaSalaExtension');
-      payload.preferenciaSalaExtension = cval(id, 'preferenciaSalaExtension');
+      var salaVal = cval(id, 'preferenciaSalaExtension');
+      payload.preferenciaSalaExtension = salaVal === 'Otro' ? cval(id, 'preferenciaSalaOtroExtension') : salaVal;
       payload.apoyoGraficoExtension = cval(id, 'apoyoGraficoExtension');
       payload.solicitudesEspecialesExtension = getChecked(id, 'solicitudesEspecialesExtension');
     } else if (tipo === 'externa') {
