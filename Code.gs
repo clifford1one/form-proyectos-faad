@@ -166,86 +166,107 @@ function registrarEnSheet(payload) {
 //  R  Estado
 
 function registrarHoja01(ss, payload, urlCarpeta, nImagenes, timestamp) {
-  var sheet = ss.getSheetByName('Proyectos');
+  var sheet = ss.getSheetByName('Proyectos') || ss.insertSheet('Proyectos');
 
-  if (sheet.getLastRow() === 0) encabezadosHoja01(sheet);
+  if (sheet.getLastRow() === 0) {
+    encabezadosHoja01(sheet);
 
-  // Combinar redes en una sola celda legible
-  var redes = [
-    payload.sitioWeb  ? 'Web: '  + payload.sitioWeb  : '',
-    payload.instagram ? 'IG: '   + payload.instagram  : '',
-    payload.tiktok    ? 'TT: '   + payload.tiktok     : '',
-    payload.youtube   ? 'YT: '   + payload.youtube    : '',
-    payload.linkedin  ? 'LI: '   + payload.linkedin   : '',
-    payload.facebook  ? 'FB: '   + payload.facebook   : ''
-  ].filter(Boolean).join('\n');
+    // Activar filtros
+    sheet.getRange(1,1,1,18).createFilter();
 
-  var etiquetas     = Array.isArray(payload.etiquetas) ? payload.etiquetas.join(', ') : '';
-  var menciones     = Array.isArray(payload.menciones) ? payload.menciones.join(', ') : '';
-  var fechaProyecto = payload.fechaProyecto
-    ? payload.fechaProyecto.split('-').reverse().join('/')
-    : '';
+    // Wrap texto
+    sheet.getRange("A:R").setWrap(true);
 
-  sheet.appendRow([
-    timestamp,                          // A
-    payload.nombreProyecto    || '',    // B
-    fechaProyecto,                      // C
-    payload.nombreResponsable || '',    // D
-    payload.emailResponsable  || '',    // E
-    payload.tipoProyecto      || '',    // F
-    payload.coleccion         || '',    // G
-    payload.pais              || '',    // H
-    payload.rolAutor          || '',    // I
-    etiquetas,                          // J
-    menciones,                          // K
-    payload.descripcion       || '',    // L
-    redes,                              // M
-    payload.palabrasClave     || '',    // N
-    payload.videoYoutube      || '',    // O
-    urlCarpeta,                         // P
-    nImagenes,                          // Q
-    'Pendiente revisión'                // R
-  ]);
+    // Validación de estado (columna R)
+    var rule = SpreadsheetApp.newDataValidation()
+      .requireValueInList(['Pendiente', 'En revisión', 'Aprobado', 'Rechazado'])
+      .build();
+    sheet.getRange("R2:R").setDataValidation(rule);
+  }
 
-  // Zebra: fila par en gris muy suave
+  var filaData = [
+    timestamp,
+    payload.nombreProyecto || '',
+    payload.fechaProyecto || '',
+    payload.nombreResponsable || '',
+    payload.emailResponsable || '',
+    payload.tipoProyecto || '',
+    payload.coleccion || '',
+    payload.pais || '',
+    payload.rolAutor || '',
+    (payload.etiquetas || []).join(', '),
+    (payload.menciones || []).join(', '),
+    payload.descripcion || '',
+    payload.sitioWeb || '',
+    payload.palabrasClave || '',
+    payload.videoYoutube || '',
+    urlCarpeta ? '=HYPERLINK("' + urlCarpeta + '","Abrir carpeta")' : '',
+    nImagenes,
+    'Pendiente'
+  ];
+
+  sheet.appendRow(filaData);
+
   var fila = sheet.getLastRow();
+
+  // Zebra suave
   if (fila % 2 === 0) {
-    sheet.getRange(fila, 1, 1, 18).setBackground('#f8f9fc');
+    sheet.getRange(fila, 1, 1, 18).setBackground('#f7f7f7');
   }
 }
 
 function encabezadosHoja01(sheet) {
-  var headers = [
-    'Fecha envío', 'Nombre del proyecto', 'Fecha proyecto', 'Autor', 'Email',
-    'Tipo', 'Colección', 'País', 'Rol del autor', 'Etiquetas', 'Menciones', 'Descripción',
-    'Redes y enlaces', 'Palabras clave', 'Video YouTube',
-    'Carpeta Drive', 'N° imágenes', 'Estado'
+  var headers = [ 
+    'Fecha', 'Proyecto', 'Fecha proyecto', 'Autor', 'Email',
+    'Tipo', 'Colección', 'País', 'Rol', 'Etiquetas',
+    'Menciones', 'Descripción', 'Web', 'Keywords',
+    'YouTube', 'Drive', 'Imgs', 'Estado'
   ];
 
   sheet.appendRow(headers);
-  var r = sheet.getRange(1, 1, 1, headers.length);
-  r.setBackground('#1a1a2e').setFontColor('#ffffff').setFontWeight('bold').setFontSize(10);
-  sheet.setRowHeight(1, 30);
-  sheet.setFrozenRows(1);
 
-  sheet.setColumnWidth(1, 145);   // Fecha envío
-  sheet.setColumnWidth(2, 220);   // Nombre proyecto
-  sheet.setColumnWidth(3, 120);   // Fecha proyecto
-  sheet.setColumnWidth(4, 160);   // Autor
-  sheet.setColumnWidth(5, 195);   // Email
-  sheet.setColumnWidth(6, 145);   // Tipo
-  sheet.setColumnWidth(7, 185);   // Colección
-  sheet.setColumnWidth(8, 130);   // País
-  sheet.setColumnWidth(9, 145);   // Rol del autor
-  sheet.setColumnWidth(10, 220);  // Etiquetas
-  sheet.setColumnWidth(11, 200);  // Menciones
-  sheet.setColumnWidth(12, 280);  // Descripción
-  sheet.setColumnWidth(13, 200);  // Redes y enlaces
-  sheet.setColumnWidth(14, 170);  // Palabras clave
-  sheet.setColumnWidth(15, 200);  // Video YouTube
-  sheet.setColumnWidth(16, 200);  // Carpeta Drive
-  sheet.setColumnWidth(17, 90);   // N° imágenes
-  sheet.setColumnWidth(18, 140);  // Estado
+  var r = sheet.getRange(1, 1, 1, headers.length);
+
+  r.setBackground('#111827')
+   .setFontColor('#ffffff')
+   .setFontWeight('bold')
+   .setFontSize(11)
+   .setHorizontalAlignment('center');
+
+  sheet.setFrozenRows(1);
+  sheet.setRowHeight(1, 32);
+
+  // Anchos optimizados (clave)
+  var widths = [140, 240, 120, 160, 200, 140, 160, 120, 140, 220, 220, 300, 180, 160, 200, 180, 70, 140];
+
+  widths.forEach((w, i) => sheet.setColumnWidth(i+1, w));
+
+  //////////////////////////////////////////////////
+
+  var rangoEstado = sheet.getRange("R2:R");
+
+// Pendiente → gris
+var rule1 = SpreadsheetApp.newConditionalFormatRule()
+  .whenTextEqualTo("Pendiente")
+  .setBackground("#e5e7eb")
+  .setRanges([rangoEstado])
+  .build();
+
+// Aprobado → verde
+var rule2 = SpreadsheetApp.newConditionalFormatRule()
+  .whenTextEqualTo("Aprobado")
+  .setBackground("#d1fae5")
+  .setRanges([rangoEstado])
+  .build();
+
+// Rechazado → rojo
+var rule3 = SpreadsheetApp.newConditionalFormatRule()
+  .whenTextEqualTo("Rechazado")
+  .setBackground("#fee2e2")
+  .setRanges([rangoEstado])
+  .build();
+
+sheet.setConditionalFormatRules([rule1, rule2, rule3]);
 }
 
 // ── Hoja 03: una fila por imagen ─────────────────────────────────────────────

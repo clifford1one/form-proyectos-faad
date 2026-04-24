@@ -9,7 +9,6 @@ Los datos se almacenan automáticamente en Google Sheets.
 - []()
 - []()
 
-
 ## Tecnologías
 
 - **Frontend**: HTML, CSS, JavaScript (vanilla)
