@@ -1,46 +1,45 @@
-// ══════════════════════════════════════════════════════════════════════════════
-//  CONFIGURACIÓN — reemplaza este valor antes de desplegar
-// ══════════════════════════════════════════════════════════════════════════════
-//
-//  SPREADSHEET_ID → abre tu Google Sheet y copia el ID de la URL:
-//                   https://docs.google.com/spreadsheets/d/ [ESTE_TRAMO] /edit
-
+///////////////////////////////////////////////////////////////////////////////////////7///////////
+/*SPREADSHEETS*/
+// ID del spreadsheet de prueba
 var SPREADSHEET_ID = '1NKx4wxMdGutwTfw2Gn3sNTdj3iy4xQDri1gxx_pF1b0';
-var SHEET_NAME     = 'Solicitudes';   // nombre de la pestaña en el Sheet
+// ID de la spreadsheet original de la FaAAD
+// var SPREADSHEET_ID = '18EUt_wauhDenkEmjawYFDDZ7XYgLmSiIQmonL4LVRIA';
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  SERVIR EL FORMULARIO HTML
-//  Apps Script publica el archivo "formulario.html" como web app
-// ══════════════════════════════════════════════════════════════════════════════
+var SHEET_NAME = 'VCM DISEÑO';   // nombre de la pestaña en el Sheet
 
+/*DRIVE FOLDER*/
+// ID de la carpeta de drive de prueba
+var DRIVE_FOLDER_ID = '114KG_idXui1SK3amPksnTVK5ejd8mted'
+// ID de la carpeta de drive original
+
+///////////////////////////////////////////////////////////////////////////////////////7///////////
+
+// esta funcion se ejecuta cada vez que alguien entra al link
+// cuando alguien entra al link, se ejecuta todo este codigo
 function doGet() {
   return HtmlService
+    // nombre del html
     .createHtmlOutputFromFile('index')
-    .setTitle('Enviar solicitud — FaAAD UDP')
+    // texto que se lee en la pestaña
+    .setTitle('FOrmulario de Actividades — FaAAD UDP')
+    // permite que el form esté embedido
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  FUNCIÓN PRINCIPAL
-//  Llamada desde el formulario con: google.script.run.enviarProyecto(payload)
-//
-//  payload = {
-//    tipoSolicitud: 'extension' | 'externa' | 'investigacion',
-//    nombreResponsable, emailResponsable,
-//    // campos específicos según tipo
-//  }
-// ══════════════════════════════════════════════════════════════════════════════
+///////////////////////////////////////////////////////////////////////////////////////7///////////
 
+// esta la funcion para enviar la info del formulario
+// payload es el objeto que contiene toda la info: texto, archivos, etc
 function enviarProyecto(payload) {
+  // registar la info dentro del spreadsheet
   try {
-    // Registrar fila en Google Sheets
     registrarEnSheet(payload);
 
     return {
       exito: true,
       mensaje: '¡Tu solicitud fue recibida! Pronto nos pondremos en contacto.'
     };
-
+    // mensaje de error en caso de que no llegue al spreadsheet
   } catch (e) {
     Logger.log('ERROR enviarProyecto: ' + e.message + '\n' + e.stack);
     return {
@@ -50,33 +49,25 @@ function enviarProyecto(payload) {
   }
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  ESTRUCTURA DE CARPETAS EN DRIVE
-//
-//  Raíz/
-//  └── [Tipo de solicitud]/          ← Extension, Externa, Investigacion
-//      └── [Título solicitud] — [Fecha]/
-//          ├── imagenes/
-//          ├── graficas/
-//          └── ...
-// ══════════════════════════════════════════════════════════════════════════════
-
+///////////////////////////////////////////////////////////////////////////////////////7///////////
+/* IDENTIFICADOR, CREADOR, REVISOR DE CARPETAS*/
 function crearCarpetaSolicitud(payload, solicitud, index) {
+  //buscar la carpeta drive con esa ID
   var raiz = DriveApp.getFolderById(DRIVE_FOLDER_ID);
 
-  // Nivel 1: carpeta por tipo de solicitud
+  // Nivel 1: dependiendo del tipo de soliciutd, se ubica en una carpeta, si no existe tal carpeta, la crea
   var tipoNombre = '';
-  if (solicitud.tipoSolicitud === 'extension') tipoNombre = 'Extension';
-  else if (solicitud.tipoSolicitud === 'externa') tipoNombre = 'Externa';
-  else if (solicitud.tipoSolicitud === 'investigacion') tipoNombre = 'Investigacion';
+  if (solicitud.tipoSolicitud === 'extension') tipoNombre = 'EXTENSIÓN';
+  else if (solicitud.tipoSolicitud === 'externa') tipoNombre = 'EXTERNA';
+  else if (solicitud.tipoSolicitud === 'investigacion') tipoNombre = 'INVESTIGACIÓN';
   else tipoNombre = 'Sin categoria';
 
   var carpetaTipo = obtenerOCrearSubcarpeta(raiz, tipoNombre);
 
-  // Nivel 2: carpeta individual de la solicitud (título + fecha para evitar duplicados)
-  var fecha         = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd');
+  // Nivel 2: cdentro de la carpeta, crea una nueva carpeta con el nombre y fecha del proyecto
+  var fecha = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd');
   var titulo = solicitud.tituloExtension || solicitud.tituloExterna || solicitud.tituloInvestigacion || 'Solicitud ' + (index + 1);
-  var nombreCarpeta = limpiarNombre(titulo) + ' — ' + fecha;
+  var nombreCarpeta = fecha + ' — ' + limpiarNombre(titulo);
   var carpetaSolicitud = obtenerOCrearSubcarpeta(carpetaTipo, nombreCarpeta);
 
   return carpetaSolicitud;
@@ -88,44 +79,46 @@ function obtenerOCrearSubcarpeta(padre, nombre) {
   return iter.hasNext() ? iter.next() : padre.createFolder(nombre);
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  GUARDAR ARCHIVOS EN DRIVE
-//  Cada archivo llega como: { data: "data:image/jpeg;base64,…", nombre, tipo }
-// ══════════════════════════════════════════════════════════════════════════════
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  // esta funcion guarda en el drive los arhivos
+  // la subir una foto al form, se pasa a codigo.
+  // esta funcion vuelve a pasar ese mismo codigo al formato original
+  //
+  // se ponen las imagenes en el drive, y paralelamente, 
+  function guardarArchivos(archivos, carpeta) {
+    var urls = [];
+    if (!archivos || archivos.length === 0) return urls;
 
-function guardarArchivos(archivos, carpeta) {
-  var urls = [];
-  if (!archivos || archivos.length === 0) return urls;
-
-  archivos.forEach(function (archivo) {
-    try {
-      // Separar el prefijo "data:image/jpeg;base64," del contenido real
-      var base64 = archivo.data.indexOf(',') !== -1
-        ? archivo.data.split(',')[1]
-        : archivo.data;
-
-      var bytes = Utilities.base64Decode(base64);
-      var blob  = Utilities.newBlob(bytes, archivo.tipo, archivo.nombre);
-      var file  = carpeta.createFile(blob);
-
-      // Guardar URL primero, antes de intentar cambiar permisos
-      urls.push(file.getUrl());
-
-      // Intentar hacer pública la URL (puede fallar en dominios Workspace con restricciones)
+    archivos.forEach(function (archivo) {
       try {
-        file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-      } catch (sharingErr) {
-        Logger.log('setSharing no permitido para ' + archivo.nombre + ': ' + sharingErr.message);
+        // Separar el prefijo "data:image/jpeg;base64," del contenido real
+        var base64 = archivo.data.indexOf(',') !== -1
+          ? archivo.data.split(',')[1]
+          : archivo.data;
+
+        var bytes = Utilities.base64Decode(base64);
+        var blob  = Utilities.newBlob(bytes, archivo.tipo, archivo.nombre);
+        var file  = carpeta.createFile(blob);
+
+        // Guardar URL primero, antes de intentar cambiar permisos
+        urls.push(file.getUrl());
+
+        // Intentar hacer pública la URL (puede fallar en dominios Workspace con restricciones)
+        try {
+          file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+        } catch (sharingErr) {
+          Logger.log('setSharing no permitido para ' + archivo.nombre + ': ' + sharingErr.message);
+        }
+
+      } catch (fileErr) {
+        Logger.log('Error subiendo ' + archivo.nombre + ': ' + fileErr.message);
+        urls.push('ERROR — ' + archivo.nombre + ': ' + fileErr.message);
       }
+    });
 
-    } catch (fileErr) {
-      Logger.log('Error subiendo ' + archivo.nombre + ': ' + fileErr.message);
-      urls.push('ERROR — ' + archivo.nombre + ': ' + fileErr.message);
-    }
-  });
-
-  return urls;
-}
+    return urls;
+  }
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ══════════════════════════════════════════════════════════════════════════════
 //  REGISTRAR EN LAS HOJAS
@@ -525,7 +518,9 @@ function actualizarHoja04(ss) {
 //  UTILIDADES
 // ══════════════════════════════════════════════════════════════════════════════
 
-// Limpia caracteres no permitidos en nombres de carpetas de Drive
+/*LIMPIA NOMBREEEEEES*/
+
+// esta es una función que elimina los caracteres especiales en los nombres de archivos y carpetas
 function limpiarNombre(str) {
   return (str || 'Sin nombre')
     .replace(/[\/\\:*?"<>|]/g, '-')
