@@ -9,7 +9,7 @@ var DRIVE_FOLDER_ID = '11GpUCOZnalib0SN0NDFKXq_Lv69XjWCm'; // <--- IMPORTANTE: R
 function doGet() {
   return HtmlService
     .createHtmlOutputFromFile('index')
-    .setTitle('Registro VCM DISEÑO — FaAAD UDP')
+    .setTitle('Formulario de Actividades — FaAAD UDP')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
