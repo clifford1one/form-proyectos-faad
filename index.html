@@ -1023,12 +1023,12 @@
             
             <div class="field">
               <label for="nombreResponsable">Nombre <span class="req">*</span></label>
-              <input type="text" id="nombreResponsable" placeholder="Nombre completo" required>
+              <input type="text" id="nombreResponsable" name="nombreResponsable" placeholder="Nombre completo" required>
               <p class="field-error" id="err-nombreResponsable">Este campo es obligatorio.</p>
             </div>
             <div class="field">
               <label for="emailResponsable">Email <span class="req">*</span></label>
-              <input type="email" id="emailResponsable" placeholder="correo@ejemplo.com" required>
+              <input type="email" id="emailResponsable" name="emailResponsable" placeholder="correo@ejemplo.com" required>
               <p class="field-error" id="err-emailResponsable">Este campo es obligatorio.</p>
             </div>
           </div>
@@ -1115,7 +1115,7 @@
         '<p class="section-title">Tipo de solicitud</p>' +
         '<div class="field">' +
           '<label for="tipoSolicitud-' + id + '">Selecciona el tipo de solicitud <span class="req">*</span></label>' +
-          '<select id="tipoSolicitud-' + id + '" required>' +
+          '<select id="tipoSolicitud-' + id + '" name="tipoIniciativa" required>' +
             '<option value="">Selecciona una opción</option>' +
             '<option value="extension">Iniciativas de extensión organizadas por UDP</option>' +
             '<option value="externa">Participación en instancias externas</option>' +
@@ -1130,25 +1130,25 @@
         '<p class="section-title">Iniciativas de extensión organizadas por UDP</p>' +
         '<div class="field">' +
           '<label for="tituloExtension-' + id + '">Título <span class="req">*</span></label>' +
-          '<input type="text" id="tituloExtension-' + id + '" placeholder="Respuesta corta" required>' +
+          '<input type="text" id="tituloExtension-' + id + '" name="titulo" placeholder="Respuesta corta" required>' +
           '<p class="field-error" id="err-tituloExtension-' + id + '">Este campo es obligatorio.</p>' +
         '</div>' +
         '<div class="field">' +
           '<label for="descripcionExtension-' + id + '">Descripción de la actividad <span class="req">*</span></label>' +
-          '<input type="text" id="descripcionExtension-' + id + '" placeholder="Respuesta corta" required>' +
+          '<input type="text" id="descripcionExtension-' + id + '" name="descripcion1" placeholder="Respuesta corta" required>' +
           '<p class="field-error" id="err-descripcionExtension-' + id + '">Este campo es obligatorio.</p>' +
         '</div>' +
         '<div class="field">' +
           '<label>¿Está en convenio? <span class="req">*</span></label>' +
           '<div class="radio-chips" id="convenioExtension-' + id + '" data-required="true">' +
-            '<label class="radio-chip"><input type="radio" name="convenioExtension-' + id + '" value="Sí" id="convenioExtension-' + id + '-si"><span>Sí</span></label>' +
-            '<label class="radio-chip"><input type="radio" name="convenioExtension-' + id + '" value="No" id="convenioExtension-' + id + '-no"><span>No</span></label>' +
+            '<label class="radio-chip"><input type="radio" name="convenio-' + id + '" value="Sí" id="convenioExtension-' + id + '-si"><span>Sí</span></label>' +
+            '<label class="radio-chip"><input type="radio" name="convenio-' + id + '" value="No" id="convenioExtension-' + id + '-no"><span>No</span></label>' +
           '</div>' +
           '<p class="field-error" id="err-convenioExtension-' + id + '">Selecciona una opción.</p>' +
         '</div>' +
         '<div class="field" id="institucionConvenioWrapExtension-' + id + '" style="display:none">' +
           '<label for="institucionConvenioExtension-' + id + '">Institución con convenio</label>' +
-          '<select id="institucionConvenioExtension-' + id + '">' +
+          '<select id="institucionConvenioExtension-' + id + '" name="resenaInst">' +
             '<option value="">Selecciona una institución</option>' +
             '<option value="Museo de la Solidaridad Salvador Allende">Museo de la Solidaridad Salvador Allende</option>' +
             '<option value="Centro Cultural CEINA">Centro Cultural CEINA</option>' +
@@ -1177,47 +1177,47 @@
           '</div>' +
           '<div class="field">' +
             '<label for="participantesApellidoExtension-' + id + '">Apellido participante <span class="req">*</span></label>' +
-            '<input type="text" id="participantesApellidoExtension-' + id + '" placeholder="Apellido" required>' +
+            '<input type="text" id="participantesApellidoExtension-' + id + '" name="organiza1" placeholder="Apellido" required>' +
             '<p class="field-error" id="err-participantesApellidoExtension-' + id + '">Este campo es obligatorio.</p>' +
           '</div>' +
         '</div>' +
         '<div class="field-row">' +
           '<div class="field">' +
             '<label for="participantesCargoExtension-' + id + '">Cargo <span class="req">*</span></label>' +
-            '<input type="text" id="participantesCargoExtension-' + id + '" placeholder="Cargo" required>' +
+            '<input type="text" id="participantesCargoExtension-' + id + '" name="organiza1" placeholder="Cargo" required>' +
             '<p class="field-error" id="err-participantesCargoExtension-' + id + '">Este campo es obligatorio.</p>' +
           '</div>' +
           '<div class="field">' +
             '<label for="participantesInstitucionExtension-' + id + '">Institución <span class="req">*</span></label>' +
-            '<input type="text" id="participantesInstitucionExtension-' + id + '" placeholder="Institución" required>' +
+            '<input type="text" id="participantesInstitucionExtension-' + id + '" name="organiza1" placeholder="Institución" required>' +
             '<p class="field-error" id="err-participantesInstitucionExtension-' + id + '">Este campo es obligatorio.</p>' +
           '</div>' +
         '</div>' +
         '<div class="field">' +
           '<label for="biografiaExtension-' + id + '">Biografía <span class="req">*</span></label>' +
-          '<input type="text" id="biografiaExtension-' + id + '" placeholder="Respuesta corta" required>' +
+          '<input type="text" id="biografiaExtension-' + id + '" name="biografia" placeholder="Respuesta corta" required>' +
           '<p class="field-error" id="err-biografiaExtension-' + id + '">Este campo es obligatorio.</p>' +
         '</div>' +
         '<div class="field">' +
           '<label for="rrssExtension-' + id + '">RRSS</label>' +
-          '<input type="text" id="rrssExtension-' + id + '" placeholder="Información para tagear a la gente en IG">' +
+          '<input type="text" id="rrssExtension-' + id + '" name="enlaces" placeholder="Información para tagear a la gente en IG">' +
         '</div>' +
         '<div class="field">' +
           '<label for="fechaHoraExtension-' + id + '">Fecha y hora <span class="req">*</span></label>' +
-          '<input type="datetime-local" id="fechaHoraExtension-' + id + '" required>' +
+          '<input type="datetime-local" id="fechaHoraExtension-' + id + '" name="fechaHora1" required>' +
           '<p class="field-error" id="err-fechaHoraExtension-' + id + '">Este campo es obligatorio.</p>' +
         '</div>' +
         '<div class="field">' +
           '<label>¿Necesita una sala? <span class="req">*</span></label>' +
           '<div class="radio-chips" id="necesitaSalaExtension-' + id + '" data-required="true">' +
-            '<label class="radio-chip"><input type="radio" name="necesitaSalaExtension-' + id + '" value="Sí" id="necesitaSalaExtension-' + id + '-si"><span>Sí</span></label>' +
-            '<label class="radio-chip"><input type="radio" name="necesitaSalaExtension-' + id + '" value="No" id="necesitaSalaExtension-' + id + '-no"><span>No</span></label>' +
+            '<label class="radio-chip"><input type="radio" name="disposicionSala-' + id + '" value="Sí" id="necesitaSalaExtension-' + id + '-si"><span>Sí</span></label>' +
+            '<label class="radio-chip"><input type="radio" name="disposicionSala-' + id + '" value="No" id="necesitaSalaExtension-' + id + '-no"><span>No</span></label>' +
           '</div>' +
           '<p class="field-error" id="err-necesitaSalaExtension-' + id + '">Selecciona una opción.</p>' +
         '</div>' +
         '<div class="field" id="preferenciaSalaWrapExtension-' + id + '" style="display:none">' +
           '<label for="preferenciaSalaExtension-' + id + '">Preferencia de lugar</label>' +
-          '<select id="preferenciaSalaExtension-' + id + '">' +
+          '<select id="preferenciaSalaExtension-' + id + '" name="lugar1">' +
             '<option value="">Selecciona una sala</option>' +
             '<option value="Auditorio -1 República 180 - 80 personas">Auditorio 1 República 180 - 80 personas</option>' +
             '<option value="Auditorio -2 República 180 - 150 personas">Auditorio 2 República 180 - 150 personas</option>' +
@@ -1230,17 +1230,17 @@
         '</div>' +
         '<div class="field" id="preferenciaSalaOtroWrapExtension-' + id + '" style="display:none">' +
           '<label for="preferenciaSalaOtroExtension-' + id + '">Especifica el lugar</label>' +
-          '<input type="text" id="preferenciaSalaOtroExtension-' + id + '" placeholder="Describe el lugar o sala que necesitas">' +
+          '<input type="text" id="preferenciaSalaOtroExtension-' + id + '" name="lugar1" placeholder="Describe el lugar o sala que necesitas">' +
         '</div>' +
         '<div class="field">' +
           '<label>¿Solicitas apoyo gráfico? <span class="req">*</span></label>' +
           '<div class="yes-no-buttons">' +
             '<label class="yes-no-btn">' +
-              '<input type="radio" name="apoyoGraficoExtension-' + id + '" value="Sí">' +
+              '<input type="radio" name="apoyoGrafico" value="Sí">' +
               '<span>Sí</span>' +
             '</label>' +
             '<label class="yes-no-btn">' +
-              '<input type="radio" name="apoyoGraficoExtension-' + id + '" value="No">' +
+              '<input type="radio" name="apoyoGrafico" value="No">' +
               '<span>No</span>' +
             '</label>' +
           '</div>' +
@@ -1309,10 +1309,10 @@
         '<div class="field">' +
           '<label for="solicitudesEspecialesExtension-' + id + '">Solicitudes especiales</label>' +
           '<div class="tags-grid">' +
-            '<label class="tag-chip"><input type="checkbox" name="solicitudesEspecialesExtension-' + id + '" value="Agua"><span>Agua</span></label>' +
-            '<label class="tag-chip"><input type="checkbox" name="solicitudesEspecialesExtension-' + id + '" value="Pasador de diapositivas"><span>Pasador de diapositivas</span></label>' +
-            '<label class="tag-chip"><input type="checkbox" name="solicitudesEspecialesExtension-' + id + '" value="Pantalla extra"><span>Pantalla extra</span></label>' +
-            '<label class="tag-chip"><input type="checkbox" name="solicitudesEspecialesExtension-' + id + '" value="Estacionamiento"><span>Estacionamiento</span></label>' +
+            '<label class="tag-chip"><input type="checkbox" name="especiales" value="Agua"><span>Agua</span></label>' +
+            '<label class="tag-chip"><input type="checkbox" name="especiales" value="Pasador de diapositivas"><span>Pasador de diapositivas</span></label>' +
+            '<label class="tag-chip"><input type="checkbox" name="especiales" value="Pantalla extra"><span>Pantalla extra</span></label>' +
+            '<label class="tag-chip"><input type="checkbox" name="especiales" value="Estacionamiento"><span>Estacionamiento</span></label>' +
           '</div>' +
         '</div>' +
         '<div class="foto-registro-section">' +
